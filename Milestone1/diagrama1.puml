@@ -1,0 +1,42 @@
+@startuml Diagrama Practica
+
+title RANDOM FOREST
+skinparam titleFontStyle bold
+skinparam titleFontSize 20
+
+class RandomForestClassifier {
+    -num_trees: int
+    -min_size: Universe
+    -max_depth: float
+    -ratio_samples: float
+    -num_random_features: list
+    -criterion: String
+
+    +fit(X: float[][], y: float[])
+    +predict(X: float[][]): int[]
+}
+
+interface Node {
+    +predict(X: float[][]): int[]
+}
+
+class Leaf {
+    -label: int
+
+    +predict(X: float[][]): int[]
+}
+
+class Parent {
+    -feature_index: int
+    -threshold: float
+
+    +predict(X: float[][]): int[]
+}
+
+RandomForestClassifier *-->"1 .. * " Node: decision_trees
+Leaf --|> Node
+Parent --|> Node
+Parent -->"1" Node: left_child
+Parent -->"1" Node: right_child
+
+@enduml

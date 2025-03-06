@@ -10,18 +10,36 @@ class DataSet:
         self.X = X
         self.y = y
         self.num_samples, self.num_features = X.shape  # X es la matriz de datos
+    
+    def _make_leaf(self, dataset):
+        #label = most frequent class in dataset
+        return Leaf(dataset.most_frequent_label())
+    
+    
+class RandomForestClassifier:
+    def __init__(self,num_trees, min_size, max_depth, ratio_samples, num_random_features, criterion='gini'):
         self.num_trees = num_trees
+        self.min_size = min_size
+        self.max_depth = max_depth
         self.ratio_samples = ratio_samples
-
+        self.num_random_features = num_random_features
+        self.criterion = criterion
+        self.trees = []
+  
+    def fit(self, X, y):
+        # a pair (X,y) is a dataset, with its own responsibilities
+        dataset = DataSet(X,y)
+        self._make_decision_trees(dataset)
+    
     def _make_decision_trees(self, dataset):
-        self.decision_trees = []
+        self.trees = []
         for i in range(self.num_trees):
             # sample a subset of the dataset with replacement using
             # np.random.choice() to get the indices of rows in X and y
             subset = dataset.random_sampling(self.ratio_samples)
             tree = self._make_node(subset, 1)  # the root of the decision tree
             self.decision_trees.append(tree)
-
+    
     def _make_node(self, dataset, depth):
         if depth == self.max_depth \
                 or dataset.num_samples <= self.min_size \
@@ -30,10 +48,7 @@ class DataSet:
         else:
             node = self._make_parent_or_leaf(dataset, depth)
         return node
-    
-    def _make_leaf(self, dataset):
-        label = # most frequent class in dataset
-        return Leaf(dataset.most_frequent_label())
+
     def _make_parent_or_leaf(self, dataset, depth):
         # select a random subset of features, to make trees more diverse
         idx_features = np.random.choice(range(dataset.num_features),
@@ -52,7 +67,7 @@ class DataSet:
             node.left_child = self._make_node(left_dataset, depth + 1)
             node.right_child = self._make_node(right_dataset, depth + 1)
             return node
-        
+    
     def _best_split(self, idx_features, dataset):
         # find the best pair (feature, threshold) by exploring all possible pairs
         best_feature_index, best_threshold, minimum_cost, best_split = \
@@ -66,6 +81,7 @@ class DataSet:
                     best_feature_index, best_threshold, minimum_cost, \
                       best_split = idx, val, cost, [left_dataset, right_dataset]
         return best_feature_index, best_threshold, minimum_cost, best_split
+
     def _CART_cost(self, left_dataset, right_dataset): 
         # the J(k,v) equation in the slides, using Gini
         :
@@ -75,19 +91,6 @@ class DataSet:
     def _gini(self, dataset):
         :
         :
-    
-class RandomForestClassifier:
-    def __init__(self,num_trees, min_size, max_depth, ratio_samples, num_random_features, criterion):
-        self.num_trees = num_trees
-        self.min_size = min_size
-        self.max_depth = max_depth
-        self.ratio_samples = ratio_samples
-        self.num_random_features = num_random_features
-        self.criterion = criterion
-    def fit(self, X, y):
-        # a pair (X,y) is a dataset, with its own responsibilities
-        dataset = DataSet(X,y)
-        self._make_decision_trees(dataset)
 
 class Leaf:
     def __init__(self, label):

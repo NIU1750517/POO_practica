@@ -10,11 +10,7 @@ class DataSet:
         self.X = X
         self.y = y
         self.num_samples, self.num_features = X.shape  # X es la matriz de datos
-    
-    def _make_leaf(self, dataset):
-        #label = most frequent class in dataset
-        return Leaf(dataset.most_frequent_label())
-    
+
     
 class RandomForestClassifier:
     def __init__(self,num_trees, min_size, max_depth, ratio_samples, num_random_features, criterion='gini'):
@@ -48,6 +44,10 @@ class RandomForestClassifier:
         else:
             node = self._make_parent_or_leaf(dataset, depth)
         return node
+
+    def _make_leaf(self, dataset):
+        #label = most frequent class in dataset
+        return Leaf(dataset.most_frequent_label())
 
     def _make_parent_or_leaf(self, dataset, depth):
         # select a random subset of features, to make trees more diverse
@@ -83,14 +83,18 @@ class RandomForestClassifier:
         return best_feature_index, best_threshold, minimum_cost, best_split
 
     def _CART_cost(self, left_dataset, right_dataset): 
-        # the J(k,v) equation in the slides, using Gini
-        :
-        :
-        return cost  
-    
+        # J(k,v) = (n_l/n)*G_l + (n_r/n)*G_r
+        total = left_dataset.num_samples + right_dataset.num_samples
+        cost = abs(left_dataset.num_samples/total)*self._gini(left_dataset) + \
+               abs(right_dataset.num_samples/total)*self._gini(right_dataset)
+        return cost
+
     def _gini(self, dataset):
-        :
-        :
+        C=len(np.unique(dataset.y))
+        gini=1
+        for c in range(C):
+            gini-= (np.sum(dataset.y==c)/dataset.num_samples)**2
+        return gini 
 
 class Leaf:
     def __init__(self, label):

@@ -1,6 +1,20 @@
 import numpy as np
 import sklearn.datasets
 from abc import ABC, abstractmethod
+import logging
+
+logging.basicConfig(
+    filename='loggerM1.log'
+    , # output to file
+    filemode='w'
+    , # rewrite at each execution, don't append
+    encoding='utf-8'
+    , # also non Ascii characters
+    format='%(asctime)s %(message)s'
+    , # print date and time also
+    level=logging.DEBUG # default level
+)
+logging.info('----- Script started -----')
 
 iris = sklearn.datasets.load_iris()  # diccionario
 print(iris.DESCR)
@@ -10,6 +24,7 @@ class DataSet:
     def __init__(self, X, y, num_trees, ratio_samples):
         self.X = X
         self.y = y
+        logging.debug('Dataset created')  
 
     # X es la matriz de datos
     @property
@@ -39,6 +54,7 @@ class RandomForestClassifier:
     
     def _make_decision_trees(self, dataset):
         self.trees = []
+        logging.info('Creating trees...')
         for i in range(self.num_trees):
             # sample a subset of the dataset with replacement using
             # np.random.choice() to get the indices of rows in X and y
@@ -47,6 +63,7 @@ class RandomForestClassifier:
             self.decision_trees.append(tree)
     
     def _make_node(self, dataset, depth):
+        logging.info('Making node...')
         if depth == self.max_depth \
                 or dataset.num_samples <= self.min_size \
                 or len(np.unique(dataset.y)) == 1:
@@ -55,7 +72,8 @@ class RandomForestClassifier:
             node = self._make_parent_or_leaf(dataset, depth)
         return node
 
-    def _make_leaf(self, dataset):
+    def _make_leaf(self, dataset): 
+        logging.info('Leaf created')       
         #label = most frequent class in dataset
         return Leaf(dataset.most_frequent_label())
 
@@ -68,11 +86,13 @@ class RandomForestClassifier:
         left_dataset, right_dataset = best_split
         assert left_dataset.num_samples > 0 or right_dataset.num_samples > 0
         if left_dataset.num_samples == 0 or right_dataset.num_samples == 0:
+            logging.info('Leaf created')       
             # this is an special case : dataset has samples of at least two 
             # classes but the best split is moving all samples to the left or right
             # dataset and none to the other, so we make a leaf instead of a parent
             return self._make_leaf(dataset)
         else:
+            logging.info('Parent created')       
             node = Parent(best_feature_index, best_threshold)
             node.left_child = self._make_node(left_dataset, depth + 1)
             node.right_child = self._make_node(right_dataset, depth + 1)
@@ -90,6 +110,7 @@ class RandomForestClassifier:
                 if cost < minimum_cost:
                     best_feature_index, best_threshold, minimum_cost, \
                       best_split = idx, val, cost, [left_dataset, right_dataset]
+        logging.info('Best split found: %s', best_split)
         return best_feature_index, best_threshold, minimum_cost, best_split
 
     def _CART_cost(self, left_dataset, right_dataset): 
@@ -104,6 +125,7 @@ class RandomForestClassifier:
         gini=1
         for c in range(C):
             gini-= (np.sum(dataset.y==c)/dataset.num_samples)**2
+        logging.info('Gini Purity: %s', gini)
         return gini 
 
 class Node(ABC):
@@ -129,4 +151,3 @@ class Parent(Node):
 
     def predict(self, X):
         return self.label
-

@@ -1,42 +1,45 @@
-@startuml Diagrama Practica
+@startuml
+'https://plantuml.com/class-diagram
 
-title RANDOM FOREST
-skinparam titleFontStyle bold
-skinparam titleFontSize 20
+' - added class Criterion and derivatives that contains what's common of all
+'   criteria, before in RandomForestClassifier
+
+skinparam classAttributeIconSize 0
+skinparam noteFontSize 11
+'skinparam linetype ortho
+'skinparam linetype polyline
 
 class RandomForestClassifier {
-    -num_trees: int
-    -min_size: Universe
-    -max_depth: float
-    -ratio_samples: float
-    -num_random_features: list
-    -criterion: String
-
-    +fit(X: float[][], y: float[])
-    +predict(X: float[][]): int[]
+- num_trees : int
+- min_size : int
+- max_depth : int
+- ratio_samples : float
+- num_random_features : float
+- criterion : string
++ fit (X : float[][], y : float[])
++ predict (X : float[][]) : int[]
 }
 
 interface Node {
-    +predict(X: float[][]): int[]
++ {abstract} predict(x : float[]) : int
 }
 
-class Leaf {
-    -label: int
-
-    +predict(X: float[][]): int[]
+class Leaf implements Node {
+- label : int
++ predict(x : float[]) : int
 }
 
-class Parent {
-    -feature_index: int
-    -threshold: float
-
-    +predict(X: float[][]): int[]
+class Parent implements Node {
+- feature_index : int
+- threshold : float
++ predict (x : float[]) : int
 }
 
-RandomForestClassifier *-->"1 .. * " Node: decision_trees
-Leaf --|> Node
-Parent --|> Node
-Parent -->"1" Node: left_child
-Parent -->"1" Node: right_child
+' associacions
+RandomForestClassifier *-right-> "1..*" Node : decision_trees
+Parent -down-> "1" Node : left_child
+Parent -down-> "1" Node : right_child
 
+' positionament
+'RandomForestClassifier -[hidden]-> Node
 @enduml

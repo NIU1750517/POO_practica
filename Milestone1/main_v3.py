@@ -114,7 +114,7 @@ class RandomForestClassifier:
     def _best_split(self, idx_features, dataset):
         # find the best pair (feature, threshold) by exploring all possible pairs
         best_feature_index, best_threshold, minimum_cost, best_split = \
-            np.Inf, np.Inf, np.Inf, None
+            np.inf, np.inf, np.inf, None
         for idx in idx_features:
             values = np.unique(dataset.X[:, idx])
             for val in values:

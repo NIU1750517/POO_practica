@@ -27,11 +27,11 @@ class DataSet:
     # X es la matriz de datos
     @property
     def num_samples(self):
-        self._num_samples = X.shape[0] #shape gives you the dimension of the array (number of rows)
+        self._num_samples = self.X.shape[0] #shape gives you the dimension of the array (number of rows)
         return self._num_samples
     @property
     def num_features(self):
-        self._num_features = X.shape[1] #number of columns
+        self._num_features = self.X.shape[1] #number of columns
         return self._num_features
 
     def random_sampling(self, ratio_samples):
@@ -45,7 +45,9 @@ class DataSet:
         left_dataset = DataSet(self.X[left_idx], self.y[left_idx])
         right_dataset = DataSet(self.X[right_idx], self.y[right_idx])
         return left_dataset, right_dataset
-       
+    def most_frequent_label(self): # most frequent class in dataset
+        unique, counts = np.unique(self.y, return_counts=True)
+        return unique[np.argmax(counts)]
         
     
 class RandomForestClassifier:
@@ -71,7 +73,7 @@ class RandomForestClassifier:
             # np.random.choice() to get the indices of rows in X and y
             subset = dataset.random_sampling(self.ratio_samples)
             tree = self._make_node(subset, 1)  # the root of the decision tree
-            self.decision_trees.append(tree)
+            self.trees.append(tree)
     
     def _make_node(self, dataset, depth):
         logging.info('Making node...')
@@ -138,6 +140,12 @@ class RandomForestClassifier:
             gini-= (np.sum(dataset.y==c)/dataset.num_samples)**2
         logging.info('Gini Purity: %s', gini)
         return gini 
+    def predict(self, X):
+        ypred=[]
+        for x in X:
+            predictions=[root.predict(x) for root in self.trees]
+            ypred.append(max(set(predictions), key=predictions.count))
+        return np.array(ypred)
 
 class Node(ABC):
     def __init__(self, left_child, right_child):
@@ -158,10 +166,13 @@ class Leaf(Node):
 class Parent(Node):
     def __init__(self, feature_index, threshold):
         self.feature_index = feature_index
-        self.threshold = threshold
+        self.threshold = threshold # umbral
 
     def predict(self, X):
-        return self.label
+        if X[self.feature_index] < self.threshold:
+            return self.left_child.predict(X)  # Seguimos hacia el hijo izquierdo
+        else:
+            return self.right_child.predict(X) # Seguimos hacia el hijo derecho
     
 # Load the iris dataset
 iris = sklearn.datasets.load_iris()  # dictionary
@@ -176,9 +187,7 @@ num_trees = 10      # number of decision trees
 num_features=X.shape[1]
 num_random_features = int(np.sqrt(num_features)) # number of features to consider at # each node when looking for the best split
 criterion = 'gini'  # 'gini' or 'entropy'
-rf = RandomForestClassifier(max_depth, min_size_split, ratio_samples, 
-num_trees, num_random_features, criterion)
-
+rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, criterion)
 #Train the model
 # train = make the decision trees
 rf.fit(X,y) 

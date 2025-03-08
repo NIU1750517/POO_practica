@@ -16,14 +16,12 @@ logging.basicConfig(
 )
 logging.info('----- Script started -----')
 
-iris = sklearn.datasets.load_iris()  # dictionary
-print(iris.DESCR) # description of the dataset
-X, y = iris.data, iris.target  # array of x:150x4, array of y:150, 150 samples and 4 features
-
 class DataSet:
-    def __init__(self, X, y, num_trees, ratio_samples):
-        self.X = X
-        self.y = y
+    def __init__(self, X, y):
+        self.X = np.array(X)
+        self.y = np.array(y)
+        self._num_samples = X.shape[0]
+        self._num_features = X.shape[1]
         logging.debug('Dataset created')  
 
     # X es la matriz de datos
@@ -35,6 +33,17 @@ class DataSet:
     def num_features(self):
         self._num_features = X.shape[1] #number of columns
         return self._num_features
+
+    def random_sampling(self, ratio_samples):
+        # sample a subset of the dataset with replacement using
+        # np.random.choice() to get the indices of rows in X and y
+        idx = np.random.choice(range(self.num_samples), int(self.num_samples*ratio_samples), replace=True)
+        return DataSet(self.X[idx], self.y[idx])
+    def split(self, idx, val): # divide the dataset into two subsets based on the value of a feature (umbral)
+        left_idx = self.X[:, idx] < val
+        right_idx = self.X[:, idx] >= val
+        return left_idx, right_idx
+       
         
     
 class RandomForestClassifier:
@@ -115,13 +124,13 @@ class RandomForestClassifier:
 
     def _CART_cost(self, left_dataset, right_dataset): 
         # J(k,v) = (n_l/n)*G_l + (n_r/n)*G_r
-        total = left_dataset.num_samples + right_dataset.num_samples
-        cost = abs(left_dataset.num_samples/total)*self._gini(left_dataset) + \
-               abs(right_dataset.num_samples/total)*self._gini(right_dataset)
+        total = left_dataset.shape[0] + right_dataset.shape[0] #total number of samples
+        cost = abs(left_dataset.shape[0]/total)*self._gini(left_dataset) + \
+               abs(right_dataset.shape[0]/total)*self._gini(right_dataset)
         return cost
 
     def _gini(self, dataset):
-        C=len(np.unique(dataset.y))
+        C=len(np.unique(dataset.shape[1]))
         gini=1
         for c in range(C):
             gini-= (np.sum(dataset.y==c)/dataset.num_samples)**2
@@ -151,3 +160,31 @@ class Parent(Node):
 
     def predict(self, X):
         return self.label
+    
+# Load the iris dataset
+iris = sklearn.datasets.load_iris()  # dictionary
+print(iris.DESCR) # description of the dataset
+X, y = iris.data, iris.target  # array of x:150x4, array of y:150, 150 samples and 4 features
+# Train a random forest classifier
+#Define the hyperparameters:
+max_depth = 10      # maximum number of levels of a decision tree
+min_size_split = 5  # if less, do not split a node
+ratio_samples = 0.7 # sampling with replacement
+num_trees = 10      # number of decision trees
+num_features=X.shape[1]
+num_random_features = int(np.sqrt(num_features)) # number of features to consider at # each node when looking for the best split
+criterion = 'gini'  # 'gini' or 'entropy'
+rf = RandomForestClassifier(max_depth, min_size_split, ratio_samples, 
+num_trees, num_random_features, criterion)
+
+#Train the model
+# train = make the decision trees
+rf.fit(X,y) 
+# classification           
+ypred = rf.predict(X) 
+# compute accuracy
+num_samples_test = len(y)
+num_correct_predictions = np.sum(ypred == y)
+accuracy = num_correct_predictions/float(num_samples_test)
+print('accuracy {} %'.format(100*np.round(accuracy,decimals=2)))
+

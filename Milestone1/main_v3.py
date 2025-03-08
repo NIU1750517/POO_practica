@@ -42,7 +42,9 @@ class DataSet:
     def split(self, idx, val): # divide the dataset into two subsets based on the value of a feature (umbral)
         left_idx = self.X[:, idx] < val
         right_idx = self.X[:, idx] >= val
-        return left_idx, right_idx
+        left_dataset = DataSet(self.X[left_idx], self.y[left_idx])
+        right_dataset = DataSet(self.X[right_idx], self.y[right_idx])
+        return left_dataset, right_dataset
        
         
     
@@ -124,13 +126,13 @@ class RandomForestClassifier:
 
     def _CART_cost(self, left_dataset, right_dataset): 
         # J(k,v) = (n_l/n)*G_l + (n_r/n)*G_r
-        total = left_dataset.shape[0] + right_dataset.shape[0] #total number of samples
-        cost = abs(left_dataset.shape[0]/total)*self._gini(left_dataset) + \
-               abs(right_dataset.shape[0]/total)*self._gini(right_dataset)
+        total = left_dataset.num_samples + right_dataset.num_samples #total number of samples
+        cost = abs(left_dataset.num_samples/total)*self._gini(left_dataset) + \
+               abs(right_dataset.num_samples/total)*self._gini(right_dataset)
         return cost
 
     def _gini(self, dataset):
-        C=len(np.unique(dataset.shape[1]))
+        C=len(np.unique(dataset.y))
         gini=1
         for c in range(C):
             gini-= (np.sum(dataset.y==c)/dataset.num_samples)**2

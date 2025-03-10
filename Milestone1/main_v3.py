@@ -197,3 +197,4 @@ num_correct_predictions = np.sum(ypred == y)
 accuracy = num_correct_predictions/float(num_samples_test)
 print('accuracy {} %'.format(100*np.round(accuracy,decimals=2)))
 
+logging.info('----- Script finished -----')

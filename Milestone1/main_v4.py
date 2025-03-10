@@ -14,13 +14,17 @@ logging.basicConfig(
     , # print date and time also
     level=logging.DEBUG # default level
 )
-logging.info('----- Script started -----')
+logging.info('----- Script started -----\n')
 
 class DataSet:
     def __init__(self, X, y):
         self.X = np.array(X)
         self.y = np.array(y)
-        logging.debug('Dataset created')  
+                 
+    def __str__(self):
+        return str(self.X) + ' ' + str(self.y)
+    def __repr__(self):
+        return str(self.X) + ' ' + str(self.y)
 
     # X es la matriz de datos
     @property
@@ -35,6 +39,7 @@ class DataSet:
     def random_sampling(self, ratio_samples):
         # sample a subset of the dataset with replacement using
         # np.random.choice() to get the indices of rows in X and y
+        # this function divides the initial dataset into two subsets: one for training and one for testing
         idx = np.random.choice(range(self.num_samples), int(self.num_samples*ratio_samples), replace=True)
         return DataSet(self.X[idx], self.y[idx])
     def split(self, idx, val): # divide the dataset into two subsets based on the value of a feature (umbral)
@@ -65,13 +70,14 @@ class RandomForestClassifier:
     
     def _make_decision_trees(self, dataset):
         self.trees = []
-        logging.info('Creating trees...')
+        logging.info('Creating FOREST...\n')
         for i in range(self.num_trees):
             # sample a subset of the dataset with replacement using
             # np.random.choice() to get the indices of rows in X and y
             subset = dataset.random_sampling(self.ratio_samples)
             tree = self._make_node(subset, 1)  # the root of the decision tree
             self.trees.append(tree)
+            logging.info(str(i+1)+' Tree created\n')
     
     def _make_node(self, dataset, depth):
         logging.info('Making node...')
@@ -86,6 +92,7 @@ class RandomForestClassifier:
     def _make_leaf(self, dataset): 
         logging.info('Leaf created')       
         #label = most frequent class in dataset
+        logging.info('Most frequent label: %s', dataset.most_frequent_label())
         return Leaf(dataset.most_frequent_label())
 
     def _make_parent_or_leaf(self, dataset, depth):
@@ -112,7 +119,7 @@ class RandomForestClassifier:
     def _best_split(self, idx_features, dataset):
         # find the best pair (feature, threshold) by exploring all possible pairs
         best_feature_index, best_threshold, minimum_cost, best_split = \
-            np.Inf, np.Inf, np.Inf, None
+            np.inf, np.inf, np.inf, None
         for idx in idx_features:
             values = np.unique(dataset.X[:, idx])
             for val in values:
@@ -121,12 +128,14 @@ class RandomForestClassifier:
                 if cost < minimum_cost:
                     best_feature_index, best_threshold, minimum_cost, \
                       best_split = idx, val, cost, [left_dataset, right_dataset]
-        logging.info('Best split found: %s', best_split)
         return best_feature_index, best_threshold, minimum_cost, best_split
 
     def _CART_cost(self, left_dataset, right_dataset): 
         # J(k,v) = (n_l/n)*G_l + (n_r/n)*G_r
         total = left_dataset.num_samples + right_dataset.num_samples #total number of samples
+        if total == 0:
+            logging.warning('Total number of samples is zero') 
+                   
         cost = abs(left_dataset.num_samples/total)*self._gini(left_dataset) + \
                abs(right_dataset.num_samples/total)*self._gini(right_dataset)
         return cost
@@ -136,7 +145,6 @@ class RandomForestClassifier:
         gini=1
         for c in range(C):
             gini-= (np.sum(dataset.y==c)/dataset.num_samples)**2
-        logging.info('Gini Purity: %s', gini)
         return gini 
     def predict(self, X):
         ypred=[]
@@ -174,7 +182,6 @@ class Parent(Node):
     
 # Load the iris dataset
 iris = sklearn.datasets.load_iris()  # dictionary
-print(iris.DESCR) # description of the dataset
 X, y = iris.data, iris.target  # array of x:150x4, array of y:150, 150 samples and 4 features
 # Train a random forest classifier
 #Define the hyperparameters:
@@ -195,4 +202,9 @@ ypred = rf.predict(X)
 num_samples_test = len(y)
 num_correct_predictions = np.sum(ypred == y)
 accuracy = num_correct_predictions/float(num_samples_test)
-print('accuracy {} %'.format(100*np.round(accuracy,decimals=2)))
+if float(num_samples_test)==0:
+    logging.warning('Number of samples is zero')
+
+print('\nAccuracy {} %\n'.format(100*np.round(accuracy,decimals=2)))
+
+logging.info('----- Script ended -----')

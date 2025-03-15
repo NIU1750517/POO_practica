@@ -1,0 +1,66 @@
+@startuml Diagrama Ex1 Final
+
+left to right direction
+
+title N-BODY SIMULATION 
+skinparam titleFontStyle bold
+skinparam titleFontSize 20
+
+class NBodySimulator {
+    -windowSize: int
+    -universe: Universe
+    -space_radius: float
+    -factor: float
+    -star_positions: list
+
+
+    +nBodySimulator(universe: Universe, windowSize: int)
+    -generate_star_field(num_stars: int): list
+    -draw_bodies(color: float[3], size: float)
+    -draw_star_field():void
+    -draw(position_space: float[2], color: float[3], size: float):void
+    -animate(time_step: float,trace: bool):void
+    -update(time_step: float):void
+}
+
+NBodySimulator *-->"1        " Universe: universe
+
+class Universe {
+    -radius: float
+    -name: String
+
+    +Universe(fname: String): Universe
+    +getBodyPosition(idxBody: int): float[2]
+    +update(timeStep): void
+    -computeForces(): float[][2]
+    -random(num_bodies: int): Body[]
+    -from_file(file_name: String): Body[], float
+}
+
+Universe *-->"1..*" Body: bodies
+
+class Body {
+    G: float
+    -position: float[2]
+    -velocity: float[2]
+    -mass: float
+
+    +Body(m: float, pos: float[2], vel: float[2])
+    -force(Body): float[2]
+    -distance(Body): float
+    +update(force: float[2], dt: float): void
+    +total_force(other_bodies: Body[]): float[2]
+    +move(other_bodies: Body[], dt: float): void
+    +{static} random(universe_radius:float): Body 
+    +random_vector(a: float, b: float,dim: int): float[]
+}
+
+note bottom of Universe
+    bodies is assumed an attribute of type Body[]
+    no need to add getters for radius, name, numBodies
+    static methods are alternative constructors
+    void to explicity state that methods does not return anything
+end note
+
+
+@enduml

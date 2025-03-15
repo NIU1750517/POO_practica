@@ -1,0 +1,50 @@
+@startuml Diagrama Ex1 Inicial
+
+left to right direction
+
+title N-BODY SIMULATION 
+skinparam titleFontStyle bold
+skinparam titleFontSize 20
+
+class NBodySimulator {
+    -windowSize: int
+
+    +nBodySimulator(universe: Universe, windowSize: int)
+    -draw_bodies(color: float[3], size: float)
+}
+
+NBodySimulator *-->"1        " Universe: universe
+
+class Universe {
+    -radius: float
+    -name: String
+    -numBodies: int
+
+    +Universe(fname: String): Universe
+    +getBodyPosition(idxBody: int): float[2]
+    +update(timeStep): void
+    -computeForces(): float[][2]
+}
+
+Universe *-->"1..*" Body: bodies
+
+class Body {
+    G: float
+    -position: float[2]
+    -velocity: float[2]
+    -mass: float
+
+    +Body(m: float, pos: float[2], vel: float[2])
+    +forceFrom(b: Body)
+    +move(force: float[2], timeStep: float)
+}
+
+note bottom of Universe
+    bodies is assumed an attribute of type Body[]
+    no need to add getters for radius, name, numBodies
+    static methods are alternative constructors
+    void to explicity state that methods does not return anything
+end note
+
+
+@enduml

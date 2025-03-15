@@ -1,7 +1,9 @@
 import numpy as np
 import sklearn.datasets
+import pandas as pd
 from abc import ABC, abstractmethod
 import logging
+
 
 logging.basicConfig(
     filename='loggerM1.log'
@@ -10,7 +12,7 @@ logging.basicConfig(
     , # rewrite at each execution, don't append
     encoding='utf-8'
     , # also non Ascii characters
-    format='%(asctime)s %(message)s'
+    format='%(asctime)s %(levelname)s - %(message)s '
     , # print date and time also
     level=logging.DEBUG # default level
 )
@@ -70,7 +72,7 @@ class RandomForestClassifier:
     
     def _make_decision_trees(self, dataset):
         self.trees = []
-        logging.info('Creating FOREST...\n')
+        logging.info('Creating Forest...\n')
         for i in range(self.num_trees):
             # sample a subset of the dataset with replacement using
             # np.random.choice() to get the indices of rows in X and y
@@ -141,11 +143,23 @@ class RandomForestClassifier:
         return cost
 
     def _gini(self, dataset):
+        #G(D)=1-sum(p_c^2)
         C=len(np.unique(dataset.y))
         gini=1
         for c in range(C):
-            gini-= (np.sum(dataset.y==c)/dataset.num_samples)**2
+            p_c=np.sum(dataset.y==c)/dataset.num_samples
+            gini -= (p_c)**2
         return gini 
+    
+    def _entropy(self, dataset):
+        #H(D)=-sum(p_c*log2(p_c))
+        C=len(np.unique(dataset.y))
+        entropy=0
+        for c in range(C):
+            p_c=np.sum(dataset.y==c)/dataset.num_samples
+            entropy -= p_c*np.log(p_c)
+        return entropy
+
     def predict(self, X):
         ypred=[]
         for x in X:
@@ -179,10 +193,32 @@ class Parent(Node):
             return self.left_child.predict(X)
         else:
             return self.right_child.predict(X)
-    
-# Load the iris dataset
-iris = sklearn.datasets.load_iris()  # dictionary
-X, y = iris.data, iris.target  # array of x:150x4, array of y:150, 150 samples and 4 features
+
+# ---------------------------------------------------------- MAIN ----------------------------------------
+
+def import_iris():
+    iris = sklearn.datasets.load_iris()  # dictionary
+    X, y = iris.data, iris.target  # array of x:150x4, array of y:150, 150 samples and 4 features
+    return X, y
+
+def import_sonar():
+    df = pd.read_csv('./Milestone1/sonar.all-data.csv', header=None)
+    X = df[df.columns[:-1]].to_numpy()
+    y = df[df.columns[-1]].to_numpy(dtype=str)
+    y = (y=='M').astype(int) # M = mine, R = rock
+    return X, y
+
+# Load the dataset
+dataset=input(str("Enter the dataset you want to use (iris or sonar): "))
+while(dataset!='iris' and dataset!='sonar'):
+    dataset=input(str("Enter the dataset you want to use (iris or sonar): "))
+if dataset=='iris':
+    X, y = import_iris()
+    logging.info('Dataset: IRIS')
+else:
+    X, y = import_sonar()
+    logging.info('Dataset: SONAR')
+
 # Train a random forest classifier
 #Define the hyperparameters:
 max_depth = 10      # maximum number of levels of a decision tree
@@ -191,6 +227,17 @@ ratio_samples = 0.7 # sampling with replacement
 num_trees = 10      # number of decision trees
 num_features=X.shape[1]
 num_random_features = int(np.sqrt(num_features)) # number of features to consider at # each node when looking for the best split
+
+criterion=input(str("Enter the criterion you want to use (gini or entropy): "))
+while(criterion!='gini' and criterion!='entropy'):
+    criterion=input(str("Enter the criterion you want to use (gini or entropy): "))
+if criterion=='gini':
+    criterion='gini'
+    logging.info('Criterion: GINI')
+else:
+    criterion='entropy'
+    logging.info('Criterion: ENTROPY')
+
 criterion = 'gini'  # 'gini' or 'entropy'
 rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, criterion)
 #Train the model
@@ -206,5 +253,6 @@ if float(num_samples_test)==0:
     logging.warning('Number of samples is zero')
 
 print('\nAccuracy {} %\n'.format(100*np.round(accuracy,decimals=2)))
+logging.info('Accuracy: %s \n', 100*np.round(accuracy,decimals=2))
 
 logging.info('----- Script ended -----')

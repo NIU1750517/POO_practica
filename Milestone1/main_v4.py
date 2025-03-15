@@ -56,7 +56,7 @@ class DataSet:
         
     
 class RandomForestClassifier:
-    def __init__(self,num_trees, min_size, max_depth, ratio_samples, num_random_features, criterion='gini'):
+    def __init__(self,num_trees, min_size, max_depth, ratio_samples, num_random_features, criterion):
         self.num_trees = num_trees
         self.min_size = min_size
         self.max_depth = max_depth
@@ -137,9 +137,13 @@ class RandomForestClassifier:
         total = left_dataset.num_samples + right_dataset.num_samples #total number of samples
         if total == 0:
             logging.warning('Total number of samples is zero') 
-                   
-        cost = abs(left_dataset.num_samples/total)*self._gini(left_dataset) + \
-               abs(right_dataset.num_samples/total)*self._gini(right_dataset)
+
+        if self.criterion=="gini":        
+            cost = abs(left_dataset.num_samples/total)*self._gini(left_dataset) + \
+                abs(right_dataset.num_samples/total)*self._gini(right_dataset)
+        elif self.criterion=="entropy":
+            cost = abs(left_dataset.num_samples/total)*self._entropy(left_dataset) + \
+                abs(right_dataset.num_samples/total)*self._entropy(right_dataset)    
         return cost
 
     def _gini(self, dataset):

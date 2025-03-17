@@ -3,6 +3,10 @@ import sklearn.datasets
 import pandas as pd
 from abc import ABC, abstractmethod
 import logging
+from logging.handlers import QueueHandler, QueueListener
+import pickle
+import time
+import multiprocessing
 
 logging.basicConfig(
     filename='loggerM1.log'
@@ -62,10 +66,13 @@ class RandomForestClassifier:
         self.criterion = criterion
         self.trees = []
   
-    def fit(self, X, y):
+    def fit(self, X, y, modo):
         # a pair (X,y) is a dataset, with its own responsibilities
         dataset = DataSet(X,y)
-        self._make_decision_trees(dataset)
+        if modo=='sequencial':
+            self._make_decision_trees(dataset)
+        elif modo=='parallelization':
+            self._make_decision_trees_multiprocessing(dataset)
     
     def _make_decision_trees(self, dataset):
         self.trees = []
@@ -145,6 +152,24 @@ class RandomForestClassifier:
             predictions=[root.predict(x) for root in self.trees]
             ypred.append(max(set(predictions), key=predictions.count))
         return np.array(ypred)
+    
+    def _target(self, dataset, nproc):
+        logging.debug('process {} starts'.format(nproc))
+        subset = dataset.random_sampling(self.ratio_samples)
+        tree = self._make_node(subset, 1)
+        logging.debug('process {} ends'.format(nproc))
+        return tree
+    
+    def _make_decision_trees_multiprocessing(self, dataset):
+        logging.info('Creating Forest with multiprocessing...\n')
+        t1 = time.time()
+        with multiprocessing.Pool() as pool:
+            args = [(dataset, nproc) for nproc in range(self.num_trees)]
+            self.trees = pool.starmap(self._target, args)
+        # use pool.map instead if only one argument for _target
+        t2 = time.time()
+        logging.debug(f'{round((t2-t1)/self.num_trees, 2)} seconds per tree')
+
 
 class Node(ABC):
     def __init__(self, left_child, right_child):
@@ -215,50 +240,65 @@ def import_sonar():
     y = (y=='M').astype(int) # M = mine, R = rock
     return X, y
 
-# Load the dataset
-dataset=input(str("Enter the dataset you want to use (iris or sonar): "))
-while(dataset!='iris' and dataset!='sonar'):
-    dataset=input(str("Enter the dataset you want to use (iris or sonar): "))
-if dataset=='iris':
-    X, y = import_iris()
-    logging.info('Dataset: IRIS')
-else:
-    X, y = import_sonar()
-    logging.info('Dataset: SONAR')
+def import_mnist():
+    with open("./Milestone1/mnist.pkl",'rb') as file:
+        mnist = pickle.load(file)
+    Xtrain, ytrain, Xtest, ytest = mnist["training_images"], mnist["training_labels"], mnist["test_images"], mnist["test_labels"]
+    return Xtrain, ytrain
 
-# Train a random forest classifier
-#Define the hyperparameters:
-max_depth = 10      # maximum number of levels of a decision tree
-min_size_split = 5  # if less, do not split a node
-ratio_samples = 0.7 # sampling with replacement
-num_trees = 10      # number of decision trees
-num_features=X.shape[1]
-num_random_features = int(np.sqrt(num_features)) # number of features to consider at # each node when looking for the best split
+if __name__ == '__main__':
+    # Load the dataset
+    dataset=input(str("Enter the dataset you want to use (iris/sonar/mnist): "))
+    while(dataset!='iris' and dataset!='sonar' and dataset !='mnist'):
+        dataset=input(str("Enter the dataset you want to use (iris/sonar/mnist): "))
+    if dataset=='iris':
+        X, y = import_iris()
+        logging.info('Dataset: IRIS')
+    elif dataset=='sonar':
+        X, y = import_sonar()
+        logging.info('Dataset: SONAR')
+    elif dataset=='mnist':
+        X, y = import_mnist()
+        logging.info('Dataset: MNIST')
 
-resposta=input(str("Enter the criterion you want to use (gini or entropy): "))
-while(resposta!='gini' and resposta!='entropy'):
+    # Train a random forest classifier
+    #Define the hyperparameters:
+    max_depth = 10      # maximum number of levels of a decision tree
+    min_size_split = 5  # if less, do not split a node
+    ratio_samples = 0.7 # sampling with replacement
+    num_trees = 10      # number of decision trees
+    num_features=X.shape[1]
+    num_random_features = int(np.sqrt(num_features)) # number of features to consider at # each node when looking for the best split
+
     resposta=input(str("Enter the criterion you want to use (gini or entropy): "))
-if resposta=='gini':
-    criterio=Gini()
-    logging.info('Criterion: GINI')
-else:
-    criterio=Entropy()
-    logging.info('Criterion: ENTROPY')
+    while(resposta!='gini' and resposta!='entropy'):
+        resposta=input(str("Enter the criterion you want to use (gini or entropy): "))
+    if resposta=='gini':
+        criterio=Gini()
+        logging.info('Criterion: GINI')
+    elif resposta=='entropy':
+        criterio=Entropy()
+        logging.info('Criterion: ENTROPY')
 
-rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, criterio)
-#Train the model
-# train = make the decision trees
-rf.fit(X,y) 
-# classification           
-ypred = rf.predict(X) 
-# compute accuracy
-num_samples_test = len(y)
-num_correct_predictions = np.sum(ypred == y)
-accuracy = num_correct_predictions/float(num_samples_test)
-if float(num_samples_test)==0:
-    logging.warning('Number of samples is zero')
+    modo=input(str("Enter the mode of computation of trees (sequencial/parallelization): "))
+    while(modo!='sequencial' and modo!='parallelization'):
+        modo=input(str("Enter the mode of computation of trees (sequencial/parallelization): "))
 
-print('\nAccuracy {} %\n'.format(100*np.round(accuracy,decimals=2)))
-logging.info('Accuracy: %s \n', 100*np.round(accuracy,decimals=2))
 
-logging.info('----- Script ended -----')
+    rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, criterio)
+    #Train the model
+    # train = make the decision trees
+    rf.fit(X,y, modo) 
+    # classification           
+    ypred = rf.predict(X) 
+    # compute accuracy
+    num_samples_test = len(y)
+    num_correct_predictions = np.sum(ypred == y)
+    accuracy = num_correct_predictions/float(num_samples_test)
+    if float(num_samples_test)==0:
+        logging.warning('Number of samples is zero')
+
+    print('\nAccuracy {} %\n'.format(100*np.round(accuracy,decimals=2)))
+    logging.info('Accuracy: %s \n', 100*np.round(accuracy,decimals=2))
+
+    logging.info('----- Script ended -----')

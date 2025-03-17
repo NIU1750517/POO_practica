@@ -30,8 +30,8 @@ class DataSet{
     + y : float[]
     - num_samples : int 
     - num_features : int
-    - num_samples(): int
-    - num_features(): int
+    - get_num_samples(): int
+    - get_num_features(): int
     - random_sampling(ratio_samples : float) : DataSet
     - split (index : int, val : float) : (DataSet, DataSet)
     - most_frequent_label() : int

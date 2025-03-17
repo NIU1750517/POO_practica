@@ -3,6 +3,8 @@ import sklearn.datasets
 import pandas as pd
 from abc import ABC, abstractmethod
 import logging
+import pickle
+
 
 
 logging.basicConfig(
@@ -25,12 +27,12 @@ class DataSet:
                  
     # X es la matriz de datos
     @property
-    def num_samples(self):
+    def _get_num_samples(self):
         self._num_samples = self.X.shape[0] #shape gives you the dimension of the array (number of rows)
         return self._num_samples
     
     @property
-    def num_features(self):
+    def _get_num_features(self):
         self._num_features = self.X.shape[1] #number of columns
         return self._num_features
 
@@ -196,7 +198,8 @@ class Entropy(Criterion):
         entropy=0
         for c in range(C):
             p_c=np.sum(dataset.y==c)/dataset.num_samples
-            entropy -= p_c*np.log(p_c)
+            if p_c > 0:
+                entropy -= p_c * np.log2(p_c)
         return entropy
         
 
@@ -214,6 +217,8 @@ def import_sonar():
     y = df[df.columns[-1]].to_numpy(dtype=str)
     y = (y=='M').astype(int) # M = mine, R = rock
     return X, y
+
+def import_mnist():
 
 # Load the dataset
 dataset=input(str("Enter the dataset you want to use (iris or sonar): "))

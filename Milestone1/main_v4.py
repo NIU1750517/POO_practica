@@ -23,16 +23,12 @@ class DataSet:
         self.X = np.array(X)
         self.y = np.array(y)
                  
-    def __str__(self):
-        return str(self.X) + ' ' + str(self.y)
-    def __repr__(self):
-        return str(self.X) + ' ' + str(self.y)
-
     # X es la matriz de datos
     @property
     def num_samples(self):
         self._num_samples = self.X.shape[0] #shape gives you the dimension of the array (number of rows)
         return self._num_samples
+    
     @property
     def num_features(self):
         self._num_features = self.X.shape[1] #number of columns
@@ -44,12 +40,14 @@ class DataSet:
         # this function divides the initial dataset into two subsets: one for training and one for testing
         idx = np.random.choice(range(self.num_samples), int(self.num_samples*ratio_samples), replace=True)
         return DataSet(self.X[idx], self.y[idx])
+    
     def split(self, idx, val): # divide the dataset into two subsets based on the value of a feature (umbral)
         left_idx = self.X[:, idx] < val
         right_idx = self.X[:, idx] >= val
         left_dataset = DataSet(self.X[left_idx], self.y[left_idx])
         right_dataset = DataSet(self.X[right_idx], self.y[right_idx])
         return left_dataset, right_dataset
+    
     def most_frequent_label(self): # most frequent class in dataset
         unique, counts = np.unique(self.y, return_counts=True)
         return unique[np.argmax(counts)]
@@ -138,31 +136,9 @@ class RandomForestClassifier:
         if total == 0:
             logging.warning('Total number of samples is zero') 
 
-        if self.criterion=="gini":        
-            cost = abs(left_dataset.num_samples/total)*self._gini(left_dataset) + \
-                abs(right_dataset.num_samples/total)*self._gini(right_dataset)
-        elif self.criterion=="entropy":
-            cost = abs(left_dataset.num_samples/total)*self._entropy(left_dataset) + \
-                abs(right_dataset.num_samples/total)*self._entropy(right_dataset)    
+        cost = abs(left_dataset.num_samples/total)*self.criterion.method(left_dataset) + \
+                abs(right_dataset.num_samples/total)*self.criterion.method(right_dataset)  
         return cost
-
-    def _gini(self, dataset):
-        #G(D)=1-sum(p_c^2)
-        C=len(np.unique(dataset.y))
-        gini=1
-        for c in range(C):
-            p_c=np.sum(dataset.y==c)/dataset.num_samples
-            gini -= (p_c)**2
-        return gini 
-    
-    def _entropy(self, dataset):
-        #H(D)=-sum(p_c*log2(p_c))
-        C=len(np.unique(dataset.y))
-        entropy=0
-        for c in range(C):
-            p_c=np.sum(dataset.y==c)/dataset.num_samples
-            entropy -= p_c*np.log(p_c)
-        return entropy
 
     def predict(self, X):
         ypred=[]
@@ -198,6 +174,33 @@ class Parent(Node):
         else:
             return self.right_child.predict(X)
 
+class Criterion(ABC):
+    @abstractmethod
+    def method(self, dataset):
+        pass
+
+class Gini(Criterion):
+    def method(self, dataset):
+        #G(D)=1-sum(p_c^2)
+        C=len(np.unique(dataset.y))
+        gini=1
+        for c in range(C):
+            p_c=np.sum(dataset.y==c)/dataset.num_samples
+            gini -= (p_c)**2
+        return gini 
+
+class Entropy(Criterion):
+    def method(self, dataset):
+        #H(D)=-sum(p_c*log(p_c))
+        C=len(np.unique(dataset.y))
+        entropy=0
+        for c in range(C):
+            p_c=np.sum(dataset.y==c)/dataset.num_samples
+            entropy -= p_c*np.log(p_c)
+        return entropy
+        
+
+
 # ---------------------------------------------------------- MAIN ----------------------------------------
 
 def import_iris():
@@ -232,18 +235,17 @@ num_trees = 10      # number of decision trees
 num_features=X.shape[1]
 num_random_features = int(np.sqrt(num_features)) # number of features to consider at # each node when looking for the best split
 
-criterion=input(str("Enter the criterion you want to use (gini or entropy): "))
-while(criterion!='gini' and criterion!='entropy'):
-    criterion=input(str("Enter the criterion you want to use (gini or entropy): "))
-if criterion=='gini':
-    criterion='gini'
+resposta=input(str("Enter the criterion you want to use (gini or entropy): "))
+while(resposta!='gini' and resposta!='entropy'):
+    resposta=input(str("Enter the criterion you want to use (gini or entropy): "))
+if resposta=='gini':
+    criterio=Gini()
     logging.info('Criterion: GINI')
 else:
-    criterion='entropy'
+    criterio=Entropy()
     logging.info('Criterion: ENTROPY')
 
-criterion = 'gini'  # 'gini' or 'entropy'
-rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, criterion)
+rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, criterio)
 #Train the model
 # train = make the decision trees
 rf.fit(X,y) 

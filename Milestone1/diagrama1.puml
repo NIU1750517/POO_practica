@@ -15,11 +15,37 @@ class RandomForestClassifier {
 - max_depth : int
 - ratio_samples : float
 - num_random_features : float
-- criterion : string
+- criterion : Criterion
 + fit (X : float[][], y : float[])
+- make_decision_trees(dataset : DataSet)
+- make_node (dataset : DataSet, depth : int) : Node
+- make_leaf (dataset : DataSet) : Leaf
+- make_parent_or_leaf (dataset : Dataset, depth : int) : Node
+- best_split (index_features : int, dataset : DataSet) : (float, float, float, list)
+- Cart_cost( left_dataset : DataSet, right_dataset : DataSet) : float
 + predict (X : float[][]) : int[]
 }
+class DataSet{
+    + X : float[]
+    + y : float[]
+    - num_samples : int 
+    - num_features : int
+    - num_samples(): int
+    - num_features(): int
+    - random_sampling(ratio_samples : float) : DataSet
+    - split (index : int, val : float) : (DataSet, DataSet)
+    - most_frequent_label() : int
 
+}
+interface Criterion {
+   + {abstract} method(x : Dataset) : float
+}
+class Gini implements Criterion {
+    + method(x : Dataset) : float
+}
+class Entropy implements Criterion {
+    + method(x : Dataset) : float
+}
 interface Node {
 + {abstract} predict(x : float[]) : int
 }
@@ -37,6 +63,8 @@ class Parent implements Node {
 
 ' associacions
 RandomForestClassifier *-right-> "1..*" Node : decision_trees
+RandomForestClassifier *-left-> "1" Criterion : impurity
+RandomForestClassifier *-up-> "1"  DataSet 
 Parent -down-> "1" Node : left_child
 Parent -down-> "1" Node : right_child
 

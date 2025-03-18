@@ -66,12 +66,12 @@ class RandomForestClassifier:
         self.criterion = criterion
         self.trees = []
   
-    def fit(self, X, y, modo):
+    def fit(self, X, y, mode):
         # a pair (X,y) is a dataset, with its own responsibilities
         dataset = DataSet(X,y)
-        if modo=='sequencial':
+        if mode=='sequencial':
             self._make_decision_trees(dataset)
-        elif modo=='parallelization':
+        elif mode=='parallel':
             self._make_decision_trees_multiprocessing(dataset)
     
     def _make_decision_trees(self, dataset):
@@ -168,7 +168,7 @@ class RandomForestClassifier:
             self.trees = pool.starmap(self._target, args)
         # use pool.map instead if only one argument for _target
         t2 = time.time()
-        logging.debug(f'{round((t2-t1)/self.num_trees, 2)} seconds per tree')
+        logging.debug('Parallel training completed in %.2f seconds (%.2f sec/tree)', t2-t1, (t2-t1)/self.num_trees)
 
 
 class Node(ABC):
@@ -244,21 +244,39 @@ def import_mnist():
     with open("./Milestone1/mnist.pkl",'rb') as file:
         mnist = pickle.load(file)
     Xtrain, ytrain, Xtest, ytest = mnist["training_images"], mnist["training_labels"], mnist["test_images"], mnist["test_labels"]
-    return Xtrain, ytrain
+    return Xtrain, ytrain, Xtest, ytest
+
+def divide_dataset(X, y):
+    ratio_train, ratio_test = 0.7, 0.3 # 70% train, 30% test
+    num_samples, num_features = X.shape # 150, 4
+    idx = np.random.permutation(range(num_samples))
+    # shuffle {0,1, ... 149} because samples come sorted by class!
+    num_samples_train = int(num_samples*ratio_train)
+    num_samples_test = int(num_samples*ratio_test)
+    idx_train = idx[:num_samples_train]
+    idx_test = idx[num_samples_train : num_samples_train+num_samples_test]
+    X_train, y_train = X[idx_train], y[idx_train]
+    X_test, y_test = X[idx_test], y[idx_test]
+    return X_train, y_train, X_test, y_test
+
 
 if __name__ == '__main__':
+
+
     # Load the dataset
-    dataset=input(str("Enter the dataset you want to use (iris/sonar/mnist): "))
-    while(dataset!='iris' and dataset!='sonar' and dataset !='mnist'):
-        dataset=input(str("Enter the dataset you want to use (iris/sonar/mnist): "))
+    dataset = input("Dataset (iris/sonar/mnist): ").lower()    
+    while dataset not in ['iris', 'sonar', 'mnist']:
+        dataset = input("Invalid dataset. Choose (iris/sonar/mnist): ").lower()
     if dataset=='iris':
         X, y = import_iris()
+        X_train, y_train, X_test, y_test = divide_dataset(X,y)
         logging.info('Dataset: IRIS')
     elif dataset=='sonar':
         X, y = import_sonar()
+        X_train, y_train, X_test, y_test = divide_dataset(X,y)
         logging.info('Dataset: SONAR')
-    elif dataset=='mnist':
-        X, y = import_mnist()
+    else:
+        X_train, y_train, X_test, y_test = import_mnist()
         logging.info('Dataset: MNIST')
 
     # Train a random forest classifier
@@ -267,33 +285,32 @@ if __name__ == '__main__':
     min_size_split = 5  # if less, do not split a node
     ratio_samples = 0.7 # sampling with replacement
     num_trees = 10      # number of decision trees
-    num_features=X.shape[1]
+    num_features=X_train.shape[1]
     num_random_features = int(np.sqrt(num_features)) # number of features to consider at # each node when looking for the best split
 
-    resposta=input(str("Enter the criterion you want to use (gini or entropy): "))
-    while(resposta!='gini' and resposta!='entropy'):
-        resposta=input(str("Enter the criterion you want to use (gini or entropy): "))
-    if resposta=='gini':
+    criterion = input("Criterion (gini/entropy): ").lower()
+    while criterion not in ['gini', 'entropy']:
+        criterion = input("Invalid criterion. Choose (gini/entropy): ").lower()
+    if criterion=='gini':
         criterio=Gini()
         logging.info('Criterion: GINI')
-    elif resposta=='entropy':
+    else:
         criterio=Entropy()
         logging.info('Criterion: ENTROPY')
 
-    modo=input(str("Enter the mode of computation of trees (sequencial/parallelization): "))
-    while(modo!='sequencial' and modo!='parallelization'):
-        modo=input(str("Enter the mode of computation of trees (sequencial/parallelization): "))
-
+    mode=input(str("Mode (sequencial/parallel): ")).lower()
+    while mode not in ['sequencial', 'parallel']:        
+        modo = input("Invalid mode. Choose (sequencial/parallel): ").lower()
 
     rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, criterio)
     #Train the model
     # train = make the decision trees
-    rf.fit(X,y, modo) 
+    rf.fit(X_train, y_train, mode) 
     # classification           
-    ypred = rf.predict(X) 
+    ypred = rf.predict(X_test) 
     # compute accuracy
-    num_samples_test = len(y)
-    num_correct_predictions = np.sum(ypred == y)
+    num_samples_test = len(y_test)
+    num_correct_predictions = np.sum(ypred == y_test)
     accuracy = num_correct_predictions/float(num_samples_test)
     if float(num_samples_test)==0:
         logging.warning('Number of samples is zero')

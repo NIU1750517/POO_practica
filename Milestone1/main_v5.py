@@ -284,7 +284,8 @@ if __name__ == '__main__':
     max_depth = 10      # maximum number of levels of a decision tree
     min_size_split = 5  # if less, do not split a node
     ratio_samples = 0.7 # sampling with replacement
-    num_trees = 10      # number of decision trees
+    num_trees = 80      # number of decision trees
+    multiprocessing.cpu_count() == 8
     num_features=X_train.shape[1]
     num_random_features = int(np.sqrt(num_features)) # number of features to consider at # each node when looking for the best split
 

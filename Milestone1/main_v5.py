@@ -223,41 +223,50 @@ class Entropy(Criterion):
             if p_c > 0:
                 entropy -= p_c * np.log2(p_c)
         return entropy
-        
+class Import(ABC):
+    @abstractmethod
+    def import_dataset(self):
+        pass
+    def divide_dataset(self,X, y):
+        ratio_train, ratio_test = 0.7, 0.3 # 70% train, 30% test
+        num_samples, num_features = X.shape # 150, 4
+        idx = np.random.permutation(range(num_samples))
+        # shuffle {0,1, ... 149} because samples come sorted by class!
+        num_samples_train = int(num_samples*ratio_train)
+        num_samples_test = int(num_samples*ratio_test)
+        idx_train = idx[:num_samples_train]
+        idx_test = idx[num_samples_train : num_samples_train+num_samples_test]
+        X_train, y_train = X[idx_train], y[idx_train]
+        X_test, y_test = X[idx_test], y[idx_test]
+        return X_train, y_train, X_test, y_test
+
+class Iris(Import):
+    def import_dataset(self):
+        iris = sklearn.datasets.load_iris()  # dictionary
+        X, y = iris.data, iris.target  # array of x:150x4, array of y:150, 150 samples and 4 features
+        X_train,y_train,X_test,y_test = self.divide_dataset(X,y)
+        return X_train, y_train, X_test, y_test
+class Sonar(Import):
+    def import_dataset(self):
+        df = pd.read_csv('./Milestone1/sonar.all-data.csv', header=None)
+        X = df[df.columns[:-1]].to_numpy()
+        y = df[df.columns[-1]].to_numpy(dtype=str)
+        y = (y=='M').astype(int) # M = mine, R = rock
+        X_train,y_train,X_test,y_test = self.divide_dataset(X,y)
+        return X_train, y_train, X_test, y_test
+class Mnist(Import):
+    def import_dataset(self):
+        with open("./Milestone1/mnist.pkl",'rb') as file:
+            mnist = pickle.load(file)
+        Xtrain, ytrain, Xtest, ytest = mnist["training_images"], mnist["training_labels"], mnist["test_images"], mnist["test_labels"]
+        return Xtrain, ytrain, Xtest, ytest
+
+
 
 
 # ---------------------------------------------------------- MAIN ----------------------------------------
 
-def import_iris():
-    iris = sklearn.datasets.load_iris()  # dictionary
-    X, y = iris.data, iris.target  # array of x:150x4, array of y:150, 150 samples and 4 features
-    return X, y
 
-def import_sonar():
-    df = pd.read_csv('./Milestone1/sonar.all-data.csv', header=None)
-    X = df[df.columns[:-1]].to_numpy()
-    y = df[df.columns[-1]].to_numpy(dtype=str)
-    y = (y=='M').astype(int) # M = mine, R = rock
-    return X, y
-
-def import_mnist():
-    with open("./Milestone1/mnist.pkl",'rb') as file:
-        mnist = pickle.load(file)
-    Xtrain, ytrain, Xtest, ytest = mnist["training_images"], mnist["training_labels"], mnist["test_images"], mnist["test_labels"]
-    return Xtrain, ytrain, Xtest, ytest
-
-def divide_dataset(X, y):
-    ratio_train, ratio_test = 0.7, 0.3 # 70% train, 30% test
-    num_samples, num_features = X.shape # 150, 4
-    idx = np.random.permutation(range(num_samples))
-    # shuffle {0,1, ... 149} because samples come sorted by class!
-    num_samples_train = int(num_samples*ratio_train)
-    num_samples_test = int(num_samples*ratio_test)
-    idx_train = idx[:num_samples_train]
-    idx_test = idx[num_samples_train : num_samples_train+num_samples_test]
-    X_train, y_train = X[idx_train], y[idx_train]
-    X_test, y_test = X[idx_test], y[idx_test]
-    return X_train, y_train, X_test, y_test
 
 
 if __name__ == '__main__':
@@ -268,15 +277,15 @@ if __name__ == '__main__':
     while dataset not in ['iris', 'sonar', 'mnist']:
         dataset = input("Invalid dataset. Choose (iris/sonar/mnist): ").lower()
     if dataset=='iris':
-        X, y = import_iris()
-        X_train, y_train, X_test, y_test = divide_dataset(X,y)
+        iris=Iris()
+        X_train, y_train, X_test, y_test = iris.import_dataset()
         logging.info('Dataset: IRIS')
     elif dataset=='sonar':
-        X, y = import_sonar()
-        X_train, y_train, X_test, y_test = divide_dataset(X,y)
+        sonar=Sonar()
+        X_train, y_train, X_test, y_test = sonar.import_dataset()
         logging.info('Dataset: SONAR')
     else:
-        X_train, y_train, X_test, y_test = import_mnist()
+        X_train, y_train, X_test, y_test = Mnist.import_dataset()
         logging.info('Dataset: MNIST')
 
     # Train a random forest classifier

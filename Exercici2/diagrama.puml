@@ -1,0 +1,33 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+skinparam noteFontSize 11
+'skinparam linetype ortho
+'skinparam linetype polyline
+
+class DualNumber {}
+
+interface Function{}
+class BinaryOperation implements Function{}
+class Power implements BinaryOperation{}
+class Square implements BinaryOperation{}
+
+class AritmeticOperation implements Function{}
+class Add implements AritmeticOperation{}
+class Sub implements AritmeticOperation{}
+class Product implements AritmeticOperation{}
+class Division implements AritmeticOperation{}
+
+class TrigonometricOperation implements Function{}
+class Sinus implements TrigonometricOperation{}
+class Cosinus implements TrigonometricOperation{}
+
+class X implements Function{} 
+class Identity implements Function{}
+
+class DualOperations implements Function{}
+DualOperations *-left-> "1..*" DualNumber
+class D_Add implements DualOperations{}
+class D_Sub implements DualOperations{}
+class D_Product implements DualOperations{}
+class D_Division implements DualOperations{}

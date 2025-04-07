@@ -183,7 +183,7 @@ class Body():
 #------------------------------------------------------MAIN CODE---------------------------------------------------------------------
 if __name__ == '__main__':
     #universe = Universe.random(10)
-    universe = Universe.from_file('3body2.txt')
+    universe = Universe.from_file('./Exercici1/5body.txt')
     #universe = Universe.configured_interactive()
     for body in universe.bodies:
         print(f"Body: {body._position} x, {body._velocity} v, {body._mass} m")

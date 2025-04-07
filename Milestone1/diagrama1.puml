@@ -80,6 +80,7 @@ RandomForestClassifier *-left-> "1" Criterion : impurity
 RandomForestClassifier *-up-> "1"  DataSet 
 Parent -down-> "1" Node : left_child
 Parent -down-> "1" Node : right_child
+RandomForestClassifier <--- Import :  num_features, fit
 
 ' positionament
 'RandomForestClassifier -[hidden]-> Node

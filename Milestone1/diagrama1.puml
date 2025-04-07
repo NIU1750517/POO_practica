@@ -37,6 +37,19 @@ class DataSet{
     - most_frequent_label() : int
 
 }
+abstract Import{
+    + {abstract} import_dataset (): float[],float[],float[],float[]
+    + divide_dataset ( X : Dataset, y : Dataset): float[],float[],float[],float[]
+}
+class Iris implements Import{
+    + import_dataset (): float[],float[],float[],float[]
+}
+class Sonar implements Import{
+    + import_dataset (): float[],float[],float[],float[]
+}
+class Mnist implements Import{
+    + import_dataset (): float[],float[],float[],float[]
+}
 interface Criterion {
    + {abstract} method(x : Dataset) : float
 }

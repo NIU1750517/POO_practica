@@ -285,7 +285,8 @@ if __name__ == '__main__':
         X_train, y_train, X_test, y_test = sonar.import_dataset()
         logging.info('Dataset: SONAR')
     else:
-        X_train, y_train, X_test, y_test = Mnist.import_dataset()
+        mnist=Mnist()
+        X_train, y_train, X_test, y_test = mnist.import_dataset()
         logging.info('Dataset: MNIST')
 
     # Train a random forest classifier
@@ -310,7 +311,7 @@ if __name__ == '__main__':
 
     mode=input(str("Mode (sequencial/parallel): ")).lower()
     while mode not in ['sequencial', 'parallel']:        
-        modo = input("Invalid mode. Choose (sequencial/parallel): ").lower()
+        mode = input("Invalid mode. Choose (sequencial/parallel): ").lower()
 
     rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, criterio)
     #Train the model

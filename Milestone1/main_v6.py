@@ -56,7 +56,7 @@ class DataSet:
         return unique[np.argmax(counts)]
 
 class RandomForestClassifier:
-    def __init__(self,num_trees, min_size, max_depth, ratio_samples, num_random_features, criterion):
+    def __init__(self,num_trees, min_size, max_depth, ratio_samples, num_random_features, criterion, extra_trees=False):
         self.num_trees = num_trees
         self.min_size = min_size
         self.max_depth = max_depth
@@ -65,20 +65,16 @@ class RandomForestClassifier:
         self.criterion = criterion
         self.trees = []
         self.training_time = 0 
+        self.extra_trees = extra_trees
 
-  
     def fit(self, X, y, mode):
         # a pair (X,y) is a dataset, with its own responsibilities
         dataset = DataSet(X,y)
-        start_time = time.time()  # Iniciar temporizador
         if mode=='sequencial':
             self._make_decision_trees(dataset)
         elif mode=='parallel':
             self._make_decision_trees_multiprocessing(dataset)
-        end_time = time.time()  # Detener temporizador
-        self.training_time = end_time - start_time
-        logging.info(f'Training completed in {self.training_time:.2f} seconds')
-    
+     
     def _make_decision_trees(self, dataset):
         self.trees = []
         logging.info('Creating Forest...\n')
@@ -140,8 +136,15 @@ class RandomForestClassifier:
         features = np.random.choice(dataset.get_num_features, self.num_random_features, False)
         
         for idx in features:
-            values = np.quantile(dataset.X[:, idx], np.linspace(0.1, 0.9, 10))
-            for val in values:
+            if self.extra_trees:
+                # Generar un único umbral aleatorio entre min y max de la característica
+                min_val = np.min(dataset.X[:, idx])
+                max_val = np.max(dataset.X[:, idx])
+                current_values = [np.random.uniform(min_val, max_val)]
+            else:
+                # Original: 10 cuantiles
+                current_values = np.quantile(dataset.X[:, idx], np.linspace(0.1, 0.9, 10))
+            for val in current_values:
                 left, right = dataset.split(idx, val)
                 cost = self._CART_cost(left, right)
                 if cost < best_cost:
@@ -324,17 +327,20 @@ if __name__ == '__main__':
         criterio=Entropy()
         logging.info('Criterion: ENTROPY')
 
+    # Nuevo input para Extra-Trees
+    extra_trees = input("Use Extra-Trees optimization? (yes/no): ").lower().strip() == 'yes'
+
     mode=input(str("Mode (sequencial/parallel): ")).lower()
     while mode not in ['sequencial', 'parallel']:        
         mode = input("Invalid mode. Choose (sequencial/parallel): ").lower()
     print("\n")
-    rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, criterio)
+
+    time_start=time.time()
+    rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, criterio, extra_trees)
     #Train the model
     # train = make the decision trees
     rf.fit(X_train, y_train, mode) 
 
-    print(f'\nTraining time: {rf.training_time:.2f} seconds\n')
-    logging.info('Training time: %.2f seconds', rf.training_time)
     # classification           
     ypred = rf.predict(X_test) 
     # compute accuracy
@@ -345,6 +351,11 @@ if __name__ == '__main__':
         logging.warning('Number of samples is zero')
 
     print('\n\nAccuracy {} %\n'.format(100*np.round(accuracy,decimals=2)))
-    logging.info('Accuracy: %s \n', 100*np.round(accuracy,decimals=2))
+    logging.info('Accuracy: %s', 100*np.round(accuracy,decimals=2))
+    time_end = time.time()  # <-- Detener temporizador TOTAL
+    total_time = time_end-time_start
+    
+    print(f'Total Time: {int(total_time // 60)}min {(total_time % 60):.4f}s\n')  # Formato MM min SS sec
+    logging.info('Total Time: %d min %.4fs\n', int(total_time // 60), (total_time % 60))
 
     logging.info('----- Script ended -----')

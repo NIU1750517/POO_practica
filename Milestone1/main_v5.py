@@ -7,6 +7,7 @@ from logging.handlers import QueueHandler, QueueListener
 import pickle
 import time
 import multiprocessing
+from tqdm import tqdm
 
 logging.basicConfig(
     filename='loggerM1.log'
@@ -77,7 +78,7 @@ class RandomForestClassifier:
     def _make_decision_trees(self, dataset):
         self.trees = []
         logging.info('Creating Forest...\n')
-        for i in range(self.num_trees):
+        for i in tqdm(range(self.num_trees), desc="Creating trees...", unit=" tree"):
             # sample a subset of the dataset with replacement using
             # np.random.choice() to get the indices of rows in X and y
             subset = dataset.random_sampling(self.ratio_samples)
@@ -148,7 +149,7 @@ class RandomForestClassifier:
 
     def predict(self, X):
         ypred=[]
-        for x in X:
+        for x in tqdm(X, desc="Predicting trees...", unit=" row"):
             predictions=[root.predict(x) for root in self.trees]
             ypred.append(max(set(predictions), key=predictions.count))
         return np.array(ypred)

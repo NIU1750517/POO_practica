@@ -64,14 +64,20 @@ class RandomForestClassifier:
         self.num_random_features = num_random_features
         self.criterion = criterion
         self.trees = []
+        self.training_time = 0 
+
   
     def fit(self, X, y, mode):
         # a pair (X,y) is a dataset, with its own responsibilities
         dataset = DataSet(X,y)
+        start_time = time.time()  # Iniciar temporizador
         if mode=='sequencial':
             self._make_decision_trees(dataset)
         elif mode=='parallel':
             self._make_decision_trees_multiprocessing(dataset)
+        end_time = time.time()  # Detener temporizador
+        self.training_time = end_time - start_time
+        logging.info(f'Training completed in {self.training_time:.2f} seconds')
     
     def _make_decision_trees(self, dataset):
         self.trees = []
@@ -80,7 +86,7 @@ class RandomForestClassifier:
             # sample a subset of the dataset with replacement using
             # np.random.choice() to get the indices of rows in X and y
             subset = dataset.random_sampling(self.ratio_samples)
-            tree = self._make_node(subset, 1)  # the root of the decision tree
+            tree = self._make_node(subset, 1)  # the root ofs the decision tree
             self.trees.append(tree)
             logging.info(str(i+1)+' Tree created\n')
     
@@ -303,7 +309,7 @@ if __name__ == '__main__':
     max_depth = 10    # maximum number of levels of a decision tree
     min_size_split = 5  # if less, do not split a node
     ratio_samples = 0.7 # sampling with replacement
-    num_trees = 10     # number of decision trees
+    num_trees = 80     # number of decision trees
     multiprocessing.cpu_count() == 8
     num_features=X_train.shape[1]
     num_random_features = int(np.sqrt(num_features)) # number of features to consider at # each node when looking for the best split
@@ -321,11 +327,14 @@ if __name__ == '__main__':
     mode=input(str("Mode (sequencial/parallel): ")).lower()
     while mode not in ['sequencial', 'parallel']:        
         mode = input("Invalid mode. Choose (sequencial/parallel): ").lower()
-
+    print("\n")
     rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, criterio)
     #Train the model
     # train = make the decision trees
     rf.fit(X_train, y_train, mode) 
+
+    print(f'\nTraining time: {rf.training_time:.2f} seconds\n')
+    logging.info('Training time: %.2f seconds', rf.training_time)
     # classification           
     ypred = rf.predict(X_test) 
     # compute accuracy
@@ -335,7 +344,7 @@ if __name__ == '__main__':
     if float(num_samples_test)==0:
         logging.warning('Number of samples is zero')
 
-    print('\nAccuracy {} %\n'.format(100*np.round(accuracy,decimals=2)))
+    print('\n\nAccuracy {} %\n'.format(100*np.round(accuracy,decimals=2)))
     logging.info('Accuracy: %s \n', 100*np.round(accuracy,decimals=2))
 
     logging.info('----- Script ended -----')

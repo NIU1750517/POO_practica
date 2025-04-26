@@ -6,6 +6,8 @@ import logging
 import pickle
 import time
 import multiprocessing
+from tqdm import tqdm
+
 
 logging.basicConfig(
     filename='loggerM1.log'
@@ -24,6 +26,7 @@ class DataSet:
     def __init__(self, X, y):
         self.X = np.array(X)
         self.y = np.array(y)
+        
       # X is the info matrix           
     @property
     def get_num_samples(self):
@@ -47,6 +50,7 @@ class DataSet:
         left_dataset = DataSet(self.X[left_idx], self.y[left_idx])
         right_dataset = DataSet(self.X[right_idx], self.y[right_idx])
         return left_dataset, right_dataset
+    
     def most_frequent_label(self):
         unique, counts = np.unique(self.y, return_counts=True)
         return unique[np.argmax(counts)]
@@ -72,11 +76,11 @@ class RandomForestClassifier:
     def _make_decision_trees(self, dataset):
         self.trees = []
         logging.info('Creating Forest...\n')
-        for i in range(self.num_trees):
+        for i in tqdm(range(self.num_trees), desc="Creating trees...", unit=" tree"):
             # sample a subset of the dataset with replacement using
             # np.random.choice() to get the indices of rows in X and y
             subset = dataset.random_sampling(self.ratio_samples)
-            tree = self._make_node(subset, 1)
+            tree = self._make_node(subset, 1)  # the root of the decision tree
             self.trees.append(tree)
             logging.info(str(i+1)+' Tree created\n')
     
@@ -102,6 +106,7 @@ class RandomForestClassifier:
         #label = most frequent class in dataset
         logging.info('Most frequent label: %s', dataset.most_frequent_label())
         return Leaf(dataset.most_frequent_label())
+    
     def _make_parent_or_leaf(self, dataset, depth):
         # select a random subset of features, to make trees more diverse
         idx_features = np.random.choice(range(dataset.get_num_features),
@@ -147,12 +152,13 @@ class RandomForestClassifier:
         cost = abs(left.get_num_samples/total)*self.criterion.method(left) + \
                 abs(right.get_num_samples/total)*self.criterion.method(right)  
         return cost
+    
     def predict(self, X):
-            ypred=[]
-            for x in X:
-                predictions=[root.predict(x) for root in self.trees]
-                ypred.append(max(set(predictions), key=predictions.count))
-            return np.array(ypred)
+        ypred=[]
+        for x in tqdm(X, desc="Predicting trees...", unit=" row"):
+            predictions=[root.predict(x) for root in self.trees]
+            ypred.append(max(set(predictions), key=predictions.count))
+        return np.array(ypred)
         
     def _target(self, dataset, nproc):
         logging.debug('process {} starts'.format(nproc))
@@ -166,8 +172,15 @@ class RandomForestClassifier:
         t1 = time.time()
         with multiprocessing.Pool() as pool:
             args = [(dataset, nproc) for nproc in range(self.num_trees)]
-            self.trees = pool.starmap(self._target, args)
-        # use pool.map instead if only one argument for _target
+            self.trees = list(tqdm(
+                        pool.starmap(self._target, args),
+                        total=self.num_trees,
+                        desc="Creating trees...",
+                        unit=" tree"
+                    ))
+        t2 = time.time()
+        logging.debug('Parallel training completed in %.2f seconds (%.2f sec/tree)', t2-t1, (t2-t1)/self.num_trees)
+        
         t2 = time.time()
         logging.debug('Parallel training completed in %.2f seconds (%.2f sec/tree)', t2-t1, (t2-t1)/self.num_trees)
 

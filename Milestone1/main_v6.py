@@ -23,28 +23,31 @@ logging.basicConfig(
 logging.info('----- Script started -----\n')
 
 class DataSet:
+    #Esta clase maneja un conjunto de datos X e y (los valores objetivo) de forma estructurada
     def __init__(self, X, y):
         self.X = np.array(X)
         self.y = np.array(y)
         
-      # X is the info matrix           
+      # X es una matriz de informacion           
     @property
     def get_num_samples(self):
-        return self.X.shape[0] #shape gives you the dimension of the array (number of rows)
+        # devuelve el número de filas, que sería el número de ejemplos
+        return self.X.shape[0] #shape te da la dimensión de la matriz
     
     @property
     def get_num_features(self):
-        self._num_features = self.X.shape[1] #number of columns
+        #devuelve el número de columnas, que sería el número de caracteristicas
+        self._num_features = self.X.shape[1] 
         return self._num_features
 
     def random_sampling(self, ratio_samples):
-        # sample a subset of the dataset with replacement using
-        # np.random.choice() to get the indices of rows in X and y
-        # this function divides the initial dataset into two subsets: one for training and one for testing
+        # muestra un subconjunto del dataset con reemplazo usando
+        # np.random.choice() para obtener los índices de las filas en X e y
         idx = np.random.choice(range(self.get_num_samples), int(self.get_num_samples*ratio_samples), replace=True)
         return DataSet(self.X[idx], self.y[idx])
     
-    def split(self, idx, val): # divide the dataset into two subsets based on the value of a feature (umbral)
+    def split(self, idx, val): 
+        # divide el dataset en dos subconjuntos basandose en el valor de una caracterÍstica (umbral)
         left_idx = self.X[:, idx] < val
         right_idx = self.X[:, idx] >= val
         left_dataset = DataSet(self.X[left_idx], self.y[left_idx])
@@ -52,10 +55,12 @@ class DataSet:
         return left_dataset, right_dataset
     
     def most_frequent_label(self):
+        #devuelve el valor objetivo (y) que aparece con más frecuencia en el dataset
         unique, counts = np.unique(self.y, return_counts=True)
         return unique[np.argmax(counts)]
 
 class RandomForestClassifier:
+    #implementa un random forest,, un conjunto de árboles de decisión entrenados con diferentes subconjuntos de datos y características
     def __init__(self,num_trees, min_size, max_depth, ratio_samples, num_random_features, criterion, extra_trees=False):
         self.num_trees = num_trees
         self.min_size = min_size
@@ -68,7 +73,7 @@ class RandomForestClassifier:
         self.extra_trees = extra_trees
 
     def fit(self, X, y, mode):
-        # a pair (X,y) is a dataset, with its own responsibilities
+        #Entrena el bosque de árboles de decisión usando el conjunto de datos
         dataset = DataSet(X,y)
         if mode=='sequencial':
             self._make_decision_trees(dataset)
@@ -76,17 +81,17 @@ class RandomForestClassifier:
             self._make_decision_trees_multiprocessing(dataset)
      
     def _make_decision_trees(self, dataset):
+        #Entrena todos los árboles uno por uno en modo secuencial
         self.trees = []
         logging.info('Creating Forest...\n')
         for i in tqdm(range(self.num_trees), desc="Creating trees...", unit=" tree"):
-            # sample a subset of the dataset with replacement using
-            # np.random.choice() to get the indices of rows in X and y
             subset = dataset.random_sampling(self.ratio_samples)
-            tree = self._make_node(subset, 1)  # the root ofs the decision tree
+            tree = self._make_node(subset, 1)  # la raíz del árbol de decisión
             self.trees.append(tree)
             logging.info(str(i+1)+' Tree created\n')
     
     def _make_node(self, dataset, depth):
+        #Crea un nodo del árbol de decisión. Este nodo puede ser un nodo padre o un nodo hijo dependiendo de las condiciones
         logging.info('Making node...')
         if (depth >= self.max_depth 
             or dataset.get_num_samples <= self.min_size 
@@ -103,14 +108,14 @@ class RandomForestClassifier:
         node.right_child = self._make_node(right, depth + 1)
         return node
 
-    def _make_leaf(self, dataset):       
-        logging.info('Leaf created')       
-        #label = most frequent class in dataset
+    def _make_leaf(self, dataset):    
+        #Crea una hoja del árbol , devolviendo la clase mas frecuente en ese grupo de datos (label)  
+        logging.info('Leaf created') 
         logging.info('Most frequent label: %s', dataset.most_frequent_label())
         return Leaf(dataset.most_frequent_label())
     
     def _make_parent_or_leaf(self, dataset, depth):
-        # select a random subset of features, to make trees more diverse
+        # Selecciona un subconjunto aleatorio de carateristicas para hacer que los árboles sean más diversos.
         idx_features = np.random.choice(range(dataset.get_num_features),
                                         self.num_random_features, replace=False)
         best_feature_index, best_threshold, minimum_cost, best_split = \
@@ -119,9 +124,10 @@ class RandomForestClassifier:
         assert left_dataset.get_num_samples > 0 or right_dataset.get_num_samples > 0
         if left_dataset.get_num_samples == 0 or right_dataset.get_num_samples == 0:
             logging.info('Leaf created')       
-            # this is an special case : dataset has samples of at least two 
-            # classes but the best split is moving all samples to the left or right
-            # dataset and none to the other, so we make a leaf instead of a parent
+            # Este es un caso especial : dataset tiene muestras de al menos dos
+            # clases pero la mejor división encontrada no separa los datos correctamente 
+            # (todos terminan en un solo lado del split, dejando el otro vacío).
+            # Por lo que, en vez de seguir dividiendo, creamos directamente una hoja.
             return self._make_leaf(dataset)
         else:
             logging.info('Parent created')       
@@ -131,18 +137,18 @@ class RandomForestClassifier:
             return node
 
     def _best_split(self, dataset):
-        # find the best pair (feature, threshold) by exploring all possible pairs
+        # Encuentra el mejor split (par: característica, umbral) que separa mejor los datos para un nodo del árbol explorando todos los splits posibles
         best_feature, best_thresh, best_cost = None, None, float('inf')
         features = np.random.choice(dataset.get_num_features, self.num_random_features, False)
         
         for idx in features:
             if self.extra_trees:
-                # Generar un único umbral aleatorio entre min y max de la característica
+                # Genera un único umbral aleatorio entre el mínimo y el máximo valor de la característica
                 min_val = np.min(dataset.X[:, idx])
                 max_val = np.max(dataset.X[:, idx])
                 current_values = [np.random.uniform(min_val, max_val)]
             else:
-                # Original: 10 cuantiles
+                # Genera 10 cuantiles de la característica
                 current_values = np.quantile(dataset.X[:, idx], np.linspace(0.1, 0.9, 10))
             for val in current_values:
                 left, right = dataset.split(idx, val)
@@ -153,8 +159,9 @@ class RandomForestClassifier:
         return best_feature, best_thresh, best_cost, best_split
 
     def _CART_cost(self, left, right):
-       # J(k,v) = (n_l/n)*G_l + (n_r/n)*G_r
-        total = left.get_num_samples + right.get_num_samples #total number of samples
+        # Calcula el costo de un split para decidir si es bueno
+        # J(k,v) = (n_l/n)*G_l + (n_r/n)*G_r
+        total = left.get_num_samples + right.get_num_samples #número total de muestras
         if total == 0:
             logging.warning('Total number of samples is zero') 
 
@@ -163,6 +170,7 @@ class RandomForestClassifier:
         return cost
     
     def predict(self, X):
+        #Predice el valor objetivo para cada fila de X, haciendo que cada árbol vote, y elige la clase con más votos
         ypred=[]
         for x in tqdm(X, desc="Predicting trees...", unit=" row"):
             predictions=[root.predict(x) for root in self.trees]
@@ -170,6 +178,7 @@ class RandomForestClassifier:
         return np.array(ypred)
         
     def _target(self, dataset, nproc):
+        #Crea un solo árbol que se entrena junto a otros árboles al mismo tiempo
         logging.debug('process {} starts'.format(nproc))
         subset = dataset.random_sampling(self.ratio_samples)
         tree = self._make_node(subset, 1)
@@ -177,6 +186,7 @@ class RandomForestClassifier:
         return tree
 
     def _make_decision_trees_multiprocessing(self, dataset):
+        #Entrena varios árboles al mismo tiempo, usando múltiples núcleos
         logging.info('Creating Forest with multiprocessing...\n')
         t1 = time.time()
         with multiprocessing.Pool() as pool:
@@ -195,6 +205,7 @@ class RandomForestClassifier:
 
 
 class Node(ABC):
+    #clase abstracta que sirve como plantilla para otros tipos de nodo
     def __init__(self, left_child, right_child):
         self.left_child = left_child
         self.right_child = right_child
@@ -204,29 +215,35 @@ class Node(ABC):
         pass
 
 class Leaf(Node):
+    #representa un nodo del árbol (es una hoja)
     def __init__(self, label):
         self.label = label
 
     def predict(self, X):
+        #Devuelve siempre el label, sin importar que valor tenga X, porque en una hoja no se toman más decisiones
         return self.label
 
 class Parent(Node):
+    #representa un nodo del árbol, pero en este caso si se toman decisiones
     def __init__(self, feature_index, threshold):
         self.feature_index = feature_index
         self.threshold = threshold # umbral
 
     def predict(self, X):
+        #revisa el valor de X en la posición feature_index
         if X[self.feature_index]<self.threshold:
-            return self.left_child.predict(X)
+            return self.left_child.predict(X) #si es más pequeño que el umbralsigue por el hijo izquierdo
         else:
-            return self.right_child.predict(X)
+            return self.right_child.predict(X) #si es más grande o igual sigue por el hijo derecho
 
 class Criterion(ABC):
+    #clase abstracta que define un criterio para medir que tan bueno es un split
     @abstractmethod
     def method(self, dataset):
         pass
 
 class Gini(Criterion):
+    #Criterio que calcula el índice de Gini de un dataset
     def method(self, dataset):
         #G(D)=1-sum(p_c^2)
         C=len(np.unique(dataset.y))
@@ -237,6 +254,7 @@ class Gini(Criterion):
         return gini 
 
 class Entropy(Criterion):
+    #criterio que calcula la entropia de un dataset
     def method(self, dataset):
         #H(D)=-sum(p_c*log(p_c))
         C=len(np.unique(dataset.y))
@@ -246,6 +264,7 @@ class Entropy(Criterion):
             if p_c > 0:
                 entropy -= p_c * np.log2(p_c)
         return entropy
+    
 class Import(ABC):
     @abstractmethod
     def import_dataset(self):

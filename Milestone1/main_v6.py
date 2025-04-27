@@ -84,11 +84,15 @@ class RandomForestClassifier:
         """Entrena todos los árboles uno por uno en modo secuencial"""
         self.trees = []
         logging.info('Creating Forest...\n')
+        t1 = time.time()
         for i in tqdm(range(self.num_trees), desc="Creating trees...", unit=" tree"):
             subset = dataset.random_sampling(self.ratio_samples)
-            tree = self._make_node(subset, 1) #La raíz del árbol de decisión
+            tree = self._make_node(subset, 1)  # la raíz del árbol de decisión
             self.trees.append(tree)
             logging.info(str(i+1)+' Tree created\n')
+        t2 = time.time()
+        logging.debug('Training completed in %.2f seconds (%.4f sec/tree)', t2-t1, (t2-t1)/self.num_trees)
+    
     
     def _make_node(self, dataset, depth):
         """Crea un nodo del árbol de decisión. Este nodo puede ser un nodo padre o un nodo hijo dependiendo de las condiciones"""
@@ -196,9 +200,6 @@ class RandomForestClassifier:
                         desc="Creating trees...",
                         unit=" tree"
                     ))
-        t2 = time.time()
-        logging.debug('Parallel training completed in %.2f seconds (%.2f sec/tree)', t2-t1, (t2-t1)/self.num_trees)
-        
         t2 = time.time()
         logging.debug('Parallel training completed in %.2f seconds (%.2f sec/tree)', t2-t1, (t2-t1)/self.num_trees)
 

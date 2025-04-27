@@ -75,7 +75,7 @@ class RandomForestClassifier:
     def fit(self, X, y, mode):
         """Entrena el bosque de árboles de decisión usando el conjunto de datos"""
         dataset = DataSet(X,y)
-        if mode=='sequencial':
+        if mode=='sequential':
             self._make_decision_trees(dataset)
         elif mode=='parallel':
             self._make_decision_trees_multiprocessing(dataset)
@@ -335,10 +335,10 @@ if __name__ == '__main__':
 
     #Entrenar un clasificador de bosque aleatorio
     #Define los hiperparámetros:
-    max_depth = 10    # Número máximo de niveles de un árbol de decisión
-    min_size_split = 5  # Si es menor, no divida un nodo
-    ratio_samples = 0.7 # Toma de muestras con sustitución
-    num_trees = 80     #Número de árboles de decisión
+    max_depth = 15    # Número máximo de niveles de un árbol de decisión
+    min_size_split = 15  # Si es menor, no divida un nodo
+    ratio_samples = 1.0 # Toma de muestras con sustitución
+    num_trees = 300     #Número de árboles de decisión
     multiprocessing.cpu_count() == 8
     num_features=X_train.shape[1]
     num_random_features = int(np.sqrt(num_features)) #Número de características a tener en cuenta en cada nodo cuando se busca la mejor división
@@ -356,9 +356,9 @@ if __name__ == '__main__':
     # Nuevo input para Extra-Trees
     extra_trees = input("Use Extra-Trees optimization? (yes/no): ").lower().strip() == 'yes'
 
-    mode=input(str("Mode (sequencial/parallel): ")).lower()
-    while mode not in ['sequencial', 'parallel']:        
-        mode = input("Invalid mode. Choose (sequencial/parallel): ").lower()
+    mode=input(str("Mode (sequential/parallel): ")).lower()
+    while mode not in ['sequential', 'parallel']:        
+        mode = input("Invalid mode. Choose (sequential/parallel): ").lower()
     print("\n")
 
     time_start=time.time()

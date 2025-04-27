@@ -266,14 +266,16 @@ class Entropy(Criterion):
         return entropy
     
 class Import(ABC):
+    #clase abstracta que establece una estructura para importar y dividir datasets en subconjuntos de entrenamiento y prueba
     @abstractmethod
     def import_dataset(self):
         pass
     def divide_dataset(self,X, y):
-        ratio_train, ratio_test = 0.7, 0.3 # 70% train, 30% test
+        #divide el dataset de una manera determinada.(70% entrenamiento, 30% prueba)
+        ratio_train, ratio_test = 0.7, 0.3 
         num_samples, num_features = X.shape # 150, 4
         idx = np.random.permutation(range(num_samples))
-        # shuffle {0,1, ... 149} because samples come sorted by class!
+        # barajar {0,1, ... 149} porque las muestras vienen ordenadas por clase!
         num_samples_train = int(num_samples*ratio_train)
         num_samples_test = int(num_samples*ratio_test)
         idx_train = idx[:num_samples_train]
@@ -284,20 +286,25 @@ class Import(ABC):
 
 class Iris(Import):
     def import_dataset(self):
-        iris = sklearn.datasets.load_iris()  # dictionary
+        #Carga el conjunto de datos iris y lo separa en X e y para luego dividirlo en conjuntos de entrenamiento y prueba utilizando la función divide_dataset
+        iris = sklearn.datasets.load_iris()  # diccionario
         X, y = iris.data, iris.target  # array of x:150x4, array of y:150, 150 samples and 4 features
         X_train,y_train,X_test,y_test = self.divide_dataset(X,y)
         return X_train, y_train, X_test, y_test
 class Sonar(Import):
     def import_dataset(self):
+        #Carga el dataset de Sonar, separa los datos en X para las columnas que contienen las características (todas menos la última)
+        # e y para la ultima columna que contiene los valores objetivo. Transforma los valores objetivo a enteros y divide los datos 
+        # en conjuntos de entrenamiengto y prueba
         df = pd.read_csv('./Milestone1/sonar.all-data.csv', header=None)
         X = df[df.columns[:-1]].to_numpy()
         y = df[df.columns[-1]].to_numpy(dtype=str)
-        y = (y=='M').astype(int) # M = mine, R = rock
+        y = (y=='M').astype(int) # M = mina, R = roca
         X_train,y_train,X_test,y_test = self.divide_dataset(X,y)
         return X_train, y_train, X_test, y_test
 class Mnist(Import):
     def import_dataset(self):
+        #Abre y carga el contenido de un archivo pickle, y devuelve directamente los conjuntos de entrenamiento y prueba ya separados 
         with open("./Milestone1/mnist.pkl",'rb') as file:
             mnist = pickle.load(file)
         Xtrain, ytrain, Xtest, ytest = mnist["training_images"], mnist["training_labels"], mnist["test_images"], mnist["test_labels"]
@@ -326,15 +333,15 @@ if __name__ == '__main__':
         X_train, y_train, X_test, y_test = mnist.import_dataset()
         logging.info('Dataset: MNIST')
 
-    # Train a random forest classifier
-    #Define the hyperparameters:
-    max_depth = 10    # maximum number of levels of a decision tree
-    min_size_split = 5  # if less, do not split a node
-    ratio_samples = 0.7 # sampling with replacement
-    num_trees = 80     # number of decision trees
+    #Entrenar un clasificador de bosque aleatorio
+    #Define los hiperparámetros:
+    max_depth = 10    # Número máximo de niveles de un árbol de decisión
+    min_size_split = 5  # Si es menor, no divida un nodo
+    ratio_samples = 0.7 # Toma de muestras con sustitución
+    num_trees = 80     #Número de árboles de decisión
     multiprocessing.cpu_count() == 8
     num_features=X_train.shape[1]
-    num_random_features = int(np.sqrt(num_features)) # number of features to consider at # each node when looking for the best split
+    num_random_features = int(np.sqrt(num_features)) #Número de características a tener en cuenta en cada nodo cuando se busca la mejor división
 
     criterion = input("Criterion (gini/entropy): ").lower()
     while criterion not in ['gini', 'entropy']:
@@ -356,11 +363,11 @@ if __name__ == '__main__':
 
     time_start=time.time()
     rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, criterio, extra_trees)
-    #Train the model
-    # train = make the decision trees
+    #Entrena el modelo
+    #entrenar = tomar la decisión árboles
     rf.fit(X_train, y_train, mode) 
 
-    # classification           
+    # clasificacion           
     ypred = rf.predict(X_test) 
     # compute accuracy
     num_samples_test = len(y_test)

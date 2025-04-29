@@ -335,10 +335,10 @@ if __name__ == '__main__':
 
     #Entrenar un clasificador de bosque aleatorio
     #Define los hiperparámetros:
-    max_depth = 15    # Número máximo de niveles de un árbol de decisión
-    min_size_split = 15  # Si es menor, no divida un nodo
-    ratio_samples = 1.0 # Toma de muestras con sustitución
-    num_trees = 300     #Número de árboles de decisión
+    max_depth = 10    # Número máximo de niveles de un árbol de decisión
+    min_size_split = 25  # Si es menor, no divida un nodo
+    ratio_samples = 1 # Toma de muestras con sustitución
+    num_trees = 250     #Número de árboles de decisión
     multiprocessing.cpu_count() == 8
     num_features=X_train.shape[1]
     num_random_features = int(np.sqrt(num_features)) #Número de características a tener en cuenta en cada nodo cuando se busca la mejor división

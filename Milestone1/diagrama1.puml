@@ -16,14 +16,19 @@ class RandomForestClassifier {
 - ratio_samples : float
 - num_random_features : float
 - criterion : Criterion
-+ fit (X : float[][], y : float[])
+- trees : list
+- training_time : float
+-extra_trees : bool
++ fit (X : float[][], y : float[],mode : str)
 - make_decision_trees(dataset : DataSet)
 - make_node (dataset : DataSet, depth : int) : Node
 - make_leaf (dataset : DataSet) : Leaf
 - make_parent_or_leaf (dataset : Dataset, depth : int) : Node
 - best_split (index_features : int, dataset : DataSet) : (float, float, float, list)
-- Cart_cost( left_dataset : DataSet, right_dataset : DataSet) : float
+- Cart_cost( left: DataSet, right : DataSet) : float
 + predict (X : float[][]) : int[]
+- target (dataset : DataSet,nproc : int ) : Tree
+- make_decision_trees_multiprocessing(dataset : Dataset)
 }
 class DataSet{
     + X : float[]

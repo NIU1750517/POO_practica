@@ -7,6 +7,7 @@ import pickle
 import time
 import multiprocessing
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 
 
 logging.basicConfig(
@@ -174,7 +175,8 @@ class RandomForest(ABC):
         ypred=[]
         for x in tqdm(X, desc="Predicting trees...", unit=" row"):
             predictions=[root.predict(x) for root in self.trees]
-            ypred.append(max(set(predictions), key=predictions.count))
+            combined = self._combinePredictions(predictions)
+            ypred.append(combined)
         return np.array(ypred)
         
     def _target(self, dataset, nproc):
@@ -201,32 +203,34 @@ class RandomForest(ABC):
         logging.debug('Parallel training completed in %.2f seconds (%.2f sec/tree)', t2-t1, (t2-t1)/self.num_trees)
 
     @abstractmethod
-    def combinePredictions(float):
+    def _combinePredictions(float):
         pass
 
     @abstractmethod
-    def _make_leaf(dataset): 
+    def _make_leaf(self, dataset): 
         pass
 
 class RandomForestClassifier(RandomForest):
-    def combine_predictions(predictions):
+    @staticmethod
+    def _combinePredictions(predictions):
         return np.argmax(np.bincount(predictions))
 
-    def _make_leaf(dataset): 
+    def _make_leaf(self, dataset): 
         """Crea una hoja del árbol , devolviendo la clase mas frecuente en ese grupo de datos (label)"""  
         logging.info('Leaf created') 
         logging.info('Most frequent label: %s', dataset.most_frequent_label())
         return Leaf(dataset.most_frequent_label())
     
 class RandomForestRegression(RandomForest):
-    def combinePredictions(predictions):
+    @staticmethod
+    def _combinePredictions(predictions):
         return np.mean(predictions)
 
-    def _make_leaf(dataset): 
+    def _make_leaf(self, dataset): 
         """Crea una hoja del árbol , devolviendo la clase mas frecuente en ese grupo de datos (label)"""  
         logging.info('Leaf created') 
         logging.info('Most frequent label: %s', dataset.most_frequent_label())
-        return Leaf(dataset.meanValue())    
+        return Leaf(dataset.mean_value())    
 
  
     
@@ -346,16 +350,59 @@ class Mnist(Import):
         Xtrain, ytrain, Xtest, ytest = mnist["training_images"], mnist["training_labels"], mnist["test_images"], mnist["test_labels"]
         return Xtrain, ytrain, Xtest, ytest
 
+class Temperatures(Import):
+    def import_dataset(self):
+        df = pd.read_csv('https://raw.githubusercontent.com/jbrownlee/'
+        'Datasets/master/daily-min-temperatures.csv')
+        # Minimum Daily Temperatures Dataset over 10 years (1981-1990)
+        # in Melbourne, Australia. The units are in degrees Celsius.
+        # These are the features to regress:
+        day = pd.DatetimeIndex(df.Date).day.to_numpy() # 1...31
+        month = pd.DatetimeIndex(df.Date).month.to_numpy() # 1...12
+        year = pd.DatetimeIndex(df.Date).year.to_numpy() # 1981...1999
+        X = np.vstack([day, month, year]).T # np array of 3 columns
+        y = df.Temp.to_numpy()
+        return X, y
+    
+    def test_regression(self, last_years_test=1):
+        X, y = self.import_dataset()
+        plt.plot(y,'.-')
+        plt.xlabel('day in 10 years'), plt.ylabel('min. daily temperature')
+        idx = last_years_test*365
+        Xtrain = X[:-idx,:] # first years
+        Xtest = X[-idx:]
+        ytrain = y[:-idx] # last years
+        ytest = y[-idx:]
 
+        #
+        rf = RandomForestRegression(num_trees=50, min_size=5, max_depth=10, ratio_samples=0.5, num_random_features=2, impurity=SumSquareError(), extra_trees=True)        
+        rf.fit(Xtrain, ytrain, mode='sequential')
+        ypred=  rf.predict(Xtest)
+        #
+
+        plt.figure()
+        x = range(idx)
+        for t, y1, y2 in zip(x, ytest, ypred):
+            plt.plot([t, t], [y1, y2], 'k-')
+        plt.plot([x[0], x[0]],[ytest[0], ypred[0]], 'k-', label='error')
+        plt.plot(x, ytest, 'g.', label='test')
+        plt.plot(x, ypred, 'y.', label='prediction')
+        plt.xlabel('day in last {} years'.format(last_years_test))
+        plt.ylabel('min. daily temperature')
+        plt.legend()
+        errors = ytest - ypred
+        rmse = np.sqrt(np.mean(errors**2))
+        plt.title('root mean square error : {:.3f}'.format(rmse))
+        plt.show()
 
 
 # ---------------------------------------------------------- MAIN ----------------------------------------
 
 if __name__ == '__main__':
     # Load the dataset
-    dataset = input("Dataset (iris/sonar/mnist): ").lower()    
-    while dataset not in ['iris', 'sonar', 'mnist']:
-        dataset = input("Invalid dataset. Choose (iris/sonar/mnist): ").lower()
+    dataset = input("Dataset (iris/sonar/mnist/temperatures): ").lower()    
+    while dataset not in ['iris', 'sonar', 'mnist', 'temperatures']:
+        dataset = input("Invalid dataset. Choose (iris/sonar/mnist/temperatures): ").lower()
     if dataset=='iris':
         iris=Iris()
         X_train, y_train, X_test, y_test = iris.import_dataset()
@@ -364,10 +411,15 @@ if __name__ == '__main__':
         sonar=Sonar()
         X_train, y_train, X_test, y_test = sonar.import_dataset()
         logging.info('Dataset: SONAR')
-    else:
+    elif dataset=='mnist':
         mnist=Mnist()
         X_train, y_train, X_test, y_test = mnist.import_dataset()
         logging.info('Dataset: MNIST')
+    else:
+        print("\n|| Regression selected ||")
+        print("ImpurityMeasure: SumSquareError\n")
+        temp=Temperatures()
+        temp.test_regression()
 
     #Entrenar un clasificador de bosque aleatorio
     #Define los hiperparámetros:
@@ -379,18 +431,16 @@ if __name__ == '__main__':
     num_features=X_train.shape[1]
     num_random_features = int(np.sqrt(num_features)) #Número de características a tener en cuenta en cada nodo cuando se busca la mejor división
 
-    impurity = input("ImpurityMeasure (gini/entropy/sse): ").lower()
+    impurity = input("ImpurityMeasure (gini/entropy): ").lower()
     while impurity not in ['gini', 'entropy', 'sse']:
-        impurity = input("Invalid impurity measure. Choose (gini/entropy/sse): ").lower()
+        impurity = input("Invalid impurity measure. Choose (gini/entropy): ").lower()
     if impurity == 'gini':
         impurity=Gini()
         logging.info('Impurity: GINI')
     elif impurity == 'entropy':
         impurity=Entropy()
         logging.info('Impurity: ENTROPY')
-    else:
-        impurity=SumSquareError()
-        logging.info('Impurity: SSE')
+
 
     # Nuevo input para Extra-Trees
     extra_trees = input("Use Extra-Trees optimization? (yes/no): ").lower().strip() == 'yes'
@@ -399,16 +449,7 @@ if __name__ == '__main__':
     while mode not in ['sequential', 'parallel']:        
         mode = input("Invalid mode. Choose (sequential/parallel): ").lower()
 
-    randomforest = input("RandomForest (classifier/regression): ").lower()
-    while randomforest not in ['classifier','regression']:
-        randomforest = input("Invalid randomforest. Choose (classifier/regression): ").lower()
-    if randomforest == 'classifer': 
-        time_start=time.time()
-        rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, impurity, extra_trees)
-    else:
-        time_start=time.time()
-        rf = RandomForestRegression(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, impurity, extra_trees)
-    print("\n")
+    rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, impurity, extra_trees)
 
     #Entrena el modelo
     #entrenar = tomar la decisión árboles
@@ -424,7 +465,7 @@ if __name__ == '__main__':
         logging.warning('Number of samples is zero')
 
     print('\n\nAccuracy {} %\n'.format(100*np.round(accuracy,decimals=2)))
-    logging.info('Accuracy: %s', 100*np.round(accuracy,decimals=2))
+    logging.info('Accuracy: %.2f %%', 100*np.round(accuracy, decimals=2))
     time_end = time.time()  # <-- Detener temporizador TOTAL
     total_time = time_end-time_start
     

@@ -58,19 +58,22 @@ class DataSet:
         """Devuelve el valor objetivo (y) que aparece con más frecuencia en el dataset"""
         unique, counts = np.unique(self.y, return_counts=True)
         return unique[np.argmax(counts)]
-
-class RandomForestClassifier:
+    
+    def mean_value(self):
+        return np.mean(self.y)
+    
+class RandomForest(ABC):
     """Implementa un random forest,, un conjunto de árboles de decisión entrenados con diferentes subconjuntos de datos y características"""
-    def __init__(self,num_trees, min_size, max_depth, ratio_samples, num_random_features, criterion, extra_trees=False):
+    def __init__(self,num_trees, min_size, max_depth, ratio_samples, num_random_features, impurity, extra_trees=False):
         self.num_trees = num_trees
         self.min_size = min_size
         self.max_depth = max_depth
         self.ratio_samples = ratio_samples
         self.num_random_features = num_random_features
-        self.criterion = criterion
+        self.impurity = impurity
         self.trees = []
         self.training_time = 0 
-        self.extra_trees = extra_trees
+        self.extra_trees = extra_trees 
 
     def fit(self, X, y, mode):
         """Entrena el bosque de árboles de decisión usando el conjunto de datos"""
@@ -111,12 +114,6 @@ class RandomForestClassifier:
         node.left_child = self._make_node(left, depth + 1)
         node.right_child = self._make_node(right, depth + 1)
         return node
-
-    def _make_leaf(self, dataset):    
-        """Crea una hoja del árbol , devolviendo la clase mas frecuente en ese grupo de datos (label)"""  
-        logging.info('Leaf created') 
-        logging.info('Most frequent label: %s', dataset.most_frequent_label())
-        return Leaf(dataset.most_frequent_label())
     
     def _make_parent_or_leaf(self, dataset, depth):
         """Selecciona un subconjunto aleatorio de carateristicas para hacer que los árboles sean más diversos"""
@@ -168,8 +165,8 @@ class RandomForestClassifier:
         if total == 0:
             logging.warning('Total number of samples is zero') 
 
-        cost = abs(left.get_num_samples/total)*self.criterion.method(left) + \
-                abs(right.get_num_samples/total)*self.criterion.method(right)  
+        cost = abs(left.get_num_samples/total)*self.impurity.compute(left) + \
+                abs(right.get_num_samples/total)*self.impurity.compute(right)  
         return cost
     
     def predict(self, X):
@@ -202,6 +199,37 @@ class RandomForestClassifier:
                     ))
         t2 = time.time()
         logging.debug('Parallel training completed in %.2f seconds (%.2f sec/tree)', t2-t1, (t2-t1)/self.num_trees)
+
+    @abstractmethod
+    def combinePredictions(float):
+        pass
+
+    @abstractmethod
+    def _make_leaf(dataset): 
+        pass
+
+class RandomForestClassifier(RandomForest):
+    def combine_predictions(predictions):
+        return np.argmax(np.bincount(predictions))
+
+    def _make_leaf(dataset): 
+        """Crea una hoja del árbol , devolviendo la clase mas frecuente en ese grupo de datos (label)"""  
+        logging.info('Leaf created') 
+        logging.info('Most frequent label: %s', dataset.most_frequent_label())
+        return Leaf(dataset.most_frequent_label())
+    
+class RandomForestRegression(RandomForest):
+    def combinePredictions(predictions):
+        return np.mean(predictions)
+
+    def _make_leaf(dataset): 
+        """Crea una hoja del árbol , devolviendo la clase mas frecuente en ese grupo de datos (label)"""  
+        logging.info('Leaf created') 
+        logging.info('Most frequent label: %s', dataset.most_frequent_label())
+        return Leaf(dataset.meanValue())    
+
+ 
+    
 
 
 class Node(ABC):
@@ -236,15 +264,15 @@ class Parent(Node):
         else:
             return self.right_child.predict(X) #si es más grande o igual sigue por el hijo derecho"""
 
-class Criterion(ABC):
+class ImpurityMeasure(ABC):
     """Clase abstracta que define un criterio para medir que tan bueno es un split"""
     @abstractmethod
-    def method(self, dataset):
+    def compute(self, dataset):
         pass
 
-class Gini(Criterion):
+class Gini(ImpurityMeasure):
     """Criterio que calcula el índice de Gini de un dataset"""
-    def method(self, dataset):
+    def compute(self, dataset):
         #G(D)=1-sum(p_c^2)
         C=len(np.unique(dataset.y))
         gini=1
@@ -253,9 +281,9 @@ class Gini(Criterion):
             gini -= (p_c)**2
         return gini 
 
-class Entropy(Criterion):
+class Entropy(ImpurityMeasure):
     """Criterio que calcula la entropia de un dataset"""
-    def method(self, dataset):
+    def compute(self, dataset):
         #H(D)=-sum(p_c*log(p_c))
         C=len(np.unique(dataset.y))
         entropy=0
@@ -264,6 +292,14 @@ class Entropy(Criterion):
             if p_c > 0:
                 entropy -= p_c * np.log2(p_c)
         return entropy
+    
+class SumSquareError(ImpurityMeasure):
+    """Calcula el SSE para un dataset dado."""
+    def compute(self, dataset):
+        y = dataset.y
+        mean_y = np.mean(y)
+        sse = np.sum((y - mean_y) ** 2)
+        return sse
     
 class Import(ABC):
     """Clase abstracta que establece una estructura para importar y dividir datasets en subconjuntos de entrenamiento y prueba"""
@@ -343,15 +379,18 @@ if __name__ == '__main__':
     num_features=X_train.shape[1]
     num_random_features = int(np.sqrt(num_features)) #Número de características a tener en cuenta en cada nodo cuando se busca la mejor división
 
-    criterion = input("Criterion (gini/entropy): ").lower()
-    while criterion not in ['gini', 'entropy']:
-        criterion = input("Invalid criterion. Choose (gini/entropy): ").lower()
-    if criterion=='gini':
-        criterio=Gini()
-        logging.info('Criterion: GINI')
+    impurity = input("ImpurityMeasure (gini/entropy/sse): ").lower()
+    while impurity not in ['gini', 'entropy', 'sse']:
+        impurity = input("Invalid impurity measure. Choose (gini/entropy/sse): ").lower()
+    if impurity == 'gini':
+        impurity=Gini()
+        logging.info('Impurity: GINI')
+    elif impurity == 'entropy':
+        impurity=Entropy()
+        logging.info('Impurity: ENTROPY')
     else:
-        criterio=Entropy()
-        logging.info('Criterion: ENTROPY')
+        impurity=SumSquareError()
+        logging.info('Impurity: SSE')
 
     # Nuevo input para Extra-Trees
     extra_trees = input("Use Extra-Trees optimization? (yes/no): ").lower().strip() == 'yes'
@@ -359,10 +398,18 @@ if __name__ == '__main__':
     mode=input(str("Mode (sequential/parallel): ")).lower()
     while mode not in ['sequential', 'parallel']:        
         mode = input("Invalid mode. Choose (sequential/parallel): ").lower()
+
+    randomforest = input("RandomForest (classifier/regression): ").lower()
+    while randomforest not in ['classifier','regression']:
+        randomforest = input("Invalid randomforest. Choose (classifier/regression): ").lower()
+    if randomforest == 'classifer': 
+        time_start=time.time()
+        rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, impurity, extra_trees)
+    else:
+        time_start=time.time()
+        rf = RandomForestRegression(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, impurity, extra_trees)
     print("\n")
 
-    time_start=time.time()
-    rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, criterio, extra_trees)
     #Entrena el modelo
     #entrenar = tomar la decisión árboles
     rf.fit(X_train, y_train, mode) 

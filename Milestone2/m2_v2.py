@@ -8,6 +8,7 @@ import time
 import multiprocessing
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+import os
 
 
 logging.basicConfig(
@@ -61,6 +62,10 @@ class DataSet:
         return unique[np.argmax(counts)]
     
     def mean_value(self):
+        """Calcula la media del target y. Maneja conjuntos vacíos."""
+        if self.y.size == 0:  # Si no hay muestras
+            logging.warning('Empty dataset in mean_value(), returning 0.0')
+            return 0.0
         return np.mean(self.y)
     
 class RandomForest(ABC):
@@ -110,6 +115,7 @@ class RandomForest(ABC):
         
         if left.get_num_samples == 0 or right.get_num_samples == 0:
             return self._make_leaf(dataset)
+        
             
         node = Parent(feature_idx, threshold)
         node.left_child = self._make_node(left, depth + 1)
@@ -202,6 +208,26 @@ class RandomForest(ABC):
         t2 = time.time()
         logging.debug('Parallel training completed in %.2f seconds (%.2f sec/tree)', t2-t1, (t2-t1)/self.num_trees)
 
+    def feature_importance(self):
+        feat_imp_visitor = FeatureImportance()
+        for tree in self.trees:
+            tree.acceptVisitor(feat_imp_visitor) 
+        return feat_imp_visitor.occurrences
+
+    def print_trees(self):
+        filename = 'decisiontrees.txt'
+        with open(filename, 'w', encoding='utf-8') as f:
+            for i, tree in enumerate(self.trees):
+                f.write(f"decision tree {i+1}\n")
+                tree_printer = PrinterTree(f)
+                tree.acceptVisitor(tree_printer)
+        f.close()
+        print(f"File '{filename}' has been successfully exported!!\n")
+ 
+
+    def other_method_traversing_trees():
+        pass
+
     @abstractmethod
     def _combinePredictions(float):
         pass
@@ -232,10 +258,8 @@ class RandomForestRegression(RandomForest):
         logging.info('Most frequent label: %s', dataset.most_frequent_label())
         return Leaf(dataset.mean_value())    
 
+
  
-    
-
-
 class Node(ABC):
     """Clase abstracta que sirve como plantilla para otros tipos de nodo"""
     def __init__(self, left_child, right_child):
@@ -246,6 +270,10 @@ class Node(ABC):
     def predict(self, X):
         pass
 
+    @abstractmethod
+    def acceptVisitor(self, v):
+        pass
+
 class Leaf(Node):
     """Representa un nodo del árbol (es una hoja)"""
     def __init__(self, label):
@@ -254,6 +282,9 @@ class Leaf(Node):
     def predict(self, X):
         """Devuelve siempre el label, sin importar que valor tenga X, porque en una hoja no se toman más decisiones"""
         return self.label
+    
+    def acceptVisitor(self, v):
+        v.visitLeaf(self)
 
 class Parent(Node):
     """Representa un nodo del árbol, pero en este caso si se toman decisiones"""
@@ -264,9 +295,12 @@ class Parent(Node):
     def predict(self, X):
         """Revisa el valor de X en la posición feature_index"""
         if X[self.feature_index]<self.threshold:
-            return self.left_child.predict(X) #si es más pequeño que el umbralsigue por el hijo izquierdo"""
-        else:
-            return self.right_child.predict(X) #si es más grande o igual sigue por el hijo derecho"""
+            return self.left_child.predict(X)
+        else: 
+            return self.right_child.predict(X) 
+
+    def acceptVisitor(self, v):
+        v.visitParent(self)
 
 class ImpurityMeasure(ABC):
     """Clase abstracta que define un criterio para medir que tan bueno es un split"""
@@ -301,7 +335,7 @@ class SumSquareError(ImpurityMeasure):
     """Calcula el SSE para un dataset dado."""
     def compute(self, dataset):
         y = dataset.y
-        mean_y = np.mean(y)
+        mean_y = dataset.mean_value()  # Usar método seguro de DataSet
         sse = np.sum((y - mean_y) ** 2)
         return sse
     
@@ -323,6 +357,10 @@ class Import(ABC):
         X_train, y_train = X[idx_train], y[idx_train]
         X_test, y_test = X[idx_test], y[idx_test]
         return X_train, y_train, X_test, y_test
+    
+    @abstractmethod
+    def test_occurences(self, rf):
+        pass
 
 class Iris(Import):
     def import_dataset(self):
@@ -331,6 +369,12 @@ class Iris(Import):
         X, y = iris.data, iris.target  # array of x:150x4, array of y:150, 150 samples and 4 features
         X_train,y_train,X_test,y_test = self.divide_dataset(X,y)
         return X_train, y_train, X_test, y_test
+    
+    def test_occurences(self, rf):
+        occurrences = rf.feature_importance()
+        print('Iris occurrences for {} trees:'.format(rf.num_trees))
+        print("\t{}", occurrences)
+
 class Sonar(Import):
     def import_dataset(self):
         """Carga el dataset de Sonar, separa los datos en X para las columnas que contienen las características (todas menos la última)
@@ -342,6 +386,15 @@ class Sonar(Import):
         y = (y=='M').astype(int) # M = mina, R = roca
         X_train,y_train,X_test,y_test = self.divide_dataset(X,y)
         return X_train, y_train, X_test, y_test
+    
+    def test_occurences(self, rf):
+        occurrences = rf.feature_importance() # a dictionary
+        counts = np.array(list(occurrences.items()))
+        plt.figure(), plt.bar(counts[:, 0], counts[:, 1])
+        plt.xlabel('feature')
+        plt.ylabel('occurrences')
+        plt.title('Sonar feature importance\n{} trees'.format(rf.num_trees))
+
 class Mnist(Import):
     def import_dataset(self):
         """Abre y carga el contenido de un archivo pickle, y devuelve directamente los conjuntos de entrenamiento y prueba ya separados"""
@@ -349,7 +402,24 @@ class Mnist(Import):
             mnist = pickle.load(file)
         Xtrain, ytrain, Xtest, ytest = mnist["training_images"], mnist["training_labels"], mnist["test_images"], mnist["test_labels"]
         return Xtrain, ytrain, Xtest, ytest
-
+    
+    def test_occurences(self, rf):
+        if not os.path.exists('rf_mnist.pkl'):
+            with open('rf_mnist.pkl', 'wb') as f:
+                pickle.dump(rf, f)
+        else:
+            with open('rf_mnisit.pkl', 'rb') as f:
+                rf = pickle.loaf(f)
+        occurrences = rf.feature_importance()
+        ima = np.zeros(28*28)
+        for k in occurrences.keys():
+            ima[k] = occurrences[k]
+        plt.figure()
+        plt.imshow(np.reshape(ima,(28,28)))
+        plt.colorbar()
+        plt.title('Feature importance MNIST')
+        
+        
 class Temperatures(Import):
     def import_dataset(self):
         df = pd.read_csv('https://raw.githubusercontent.com/jbrownlee/'
@@ -373,13 +443,11 @@ class Temperatures(Import):
         Xtest = X[-idx:]
         ytrain = y[:-idx] # last years
         ytest = y[-idx:]
-
         #
         rf = RandomForestRegression(num_trees=50, min_size=5, max_depth=10, ratio_samples=0.5, num_random_features=2, impurity=SumSquareError(), extra_trees=True)        
         rf.fit(Xtrain, ytrain, mode='sequential')
         ypred=  rf.predict(Xtest)
         #
-
         plt.figure()
         x = range(idx)
         for t, y1, y2 in zip(x, ytest, ypred):
@@ -396,80 +464,133 @@ class Temperatures(Import):
         plt.show()
 
 
+class Visitor(ABC):
+    @abstractmethod
+    def visitParent(self, node):
+        pass
+
+    @abstractmethod
+    def visitLeaf(self, node):
+        pass
+
+
+class FeatureImportance(Visitor):
+    def __init__(self):
+        self.occurrences = {}
+
+    def visitParent(self, node):
+        k = node.feature_index 
+        self.occurrences[k] = self.occurrences.get(k, 0) + 1
+        node.left_child.acceptVisitor(self)
+        node.right_child.acceptVisitor(self)
+    
+    def visitLeaf(self, node):
+        pass
+
+class PrinterTree(Visitor):
+    def __init__(self, file, depth=0):
+        self._file = file
+        self._depth = depth
+    
+    def visitParent(self, node):
+        self._file.write('\t'*self._depth + 'parent, features indx. {}, threshold {:.2f}\n'.format(node.feature_index, node.threshold))
+        self._depth += 1
+        node.left_child.acceptVisitor(self)
+        node.right_child.acceptVisitor(self)
+        self._depth -= 1
+    
+    def visitLeaf(self, node):
+        self._file.write('\t'*self._depth + 'leaf, label {}\n'.format(node.label))
+
 # ---------------------------------------------------------- MAIN ----------------------------------------
 
 if __name__ == '__main__':
-    # Load the dataset
-    dataset = input("Dataset (iris/sonar/mnist/temperatures): ").lower()    
-    while dataset not in ['iris', 'sonar', 'mnist', 'temperatures']:
-        dataset = input("Invalid dataset. Choose (iris/sonar/mnist/temperatures): ").lower()
-    if dataset=='iris':
-        iris=Iris()
-        X_train, y_train, X_test, y_test = iris.import_dataset()
-        logging.info('Dataset: IRIS')
-    elif dataset=='sonar':
-        sonar=Sonar()
-        X_train, y_train, X_test, y_test = sonar.import_dataset()
-        logging.info('Dataset: SONAR')
-    elif dataset=='mnist':
-        mnist=Mnist()
-        X_train, y_train, X_test, y_test = mnist.import_dataset()
-        logging.info('Dataset: MNIST')
-    else:
-        print("\n|| Regression selected ||")
-        print("ImpurityMeasure: SumSquareError\n")
+    print("|------------------------------------------------------------------------------|")
+
+    type = input("\nCLASSIFIER or REGRESSION: ").lower()
+    while type not in ['classifier', 'regression']:
+        type = input("Invalid. Choose (CLASSIFIER/REGRESSION): ").lower()
+    if type=='regression':
+        print("\nTemperatures Dataset imported.")
+        print("SumSquareError selected.\n")
         temp=Temperatures()
         temp.test_regression()
 
-    #Entrenar un clasificador de bosque aleatorio
-    #Define los hiperparámetros:
-    max_depth = 10    # Número máximo de niveles de un árbol de decisión
-    min_size_split = 25  # Si es menor, no divida un nodo
-    ratio_samples = 1 # Toma de muestras con sustitución
-    num_trees = 250     #Número de árboles de decisión
-    multiprocessing.cpu_count() == 8
-    num_features=X_train.shape[1]
-    num_random_features = int(np.sqrt(num_features)) #Número de características a tener en cuenta en cada nodo cuando se busca la mejor división
+    else:
+        dataset = input("\nDataset (iris/sonar/mnist): ").lower()    
+        while dataset not in ['iris', 'sonar', 'mnist']:
+            dataset = input("Invalid dataset. Choose (iris/sonar/mnist): ").lower()
+        if dataset=='iris':
+            dataset=Iris()
+            X_train, y_train, X_test, y_test = dataset.import_dataset()
+            logging.info('Dataset: IRIS')
+        elif dataset=='sonar':
+            dataset=Sonar()
+            X_train, y_train, X_test, y_test = dataset.import_dataset()
+            logging.info('Dataset: SONAR')
+        elif dataset=='mnist':
+            dataset=Mnist()
+            X_train, y_train, X_test, y_test = dataset.import_dataset()
+            logging.info('Dataset: MNIST')
 
-    impurity = input("ImpurityMeasure (gini/entropy): ").lower()
-    while impurity not in ['gini', 'entropy', 'sse']:
-        impurity = input("Invalid impurity measure. Choose (gini/entropy): ").lower()
-    if impurity == 'gini':
-        impurity=Gini()
-        logging.info('Impurity: GINI')
-    elif impurity == 'entropy':
-        impurity=Entropy()
-        logging.info('Impurity: ENTROPY')
+        impurity = input("ImpurityMeasure (gini/entropy): ").lower()
+        while impurity not in ['gini', 'entropy']:
+            impurity = input("Invalid impurity measure. Choose (gini/entropy): ").lower()
+        if impurity == 'gini':
+            impurity=Gini()
+            logging.info('Impurity: GINI')
+        elif impurity == 'entropy':
+            impurity=Entropy()
+            logging.info('Impurity: ENTROPY')
+
+        extra_trees = input("Use Extra-Trees optimization? (yes/no): ").lower().strip() == 'yes'
+
+        mode=input(str("Mode (sequential/parallel): ")).lower()
+        while mode not in ['sequential', 'parallel']:        
+            mode = input("Invalid mode. Choose (sequential/parallel): ").lower()
+        print("\n")
+        #Define los hiperparámetros:
+        max_depth = 10    # Número máximo de niveles de un árbol de decisión
+        min_size_split = 25  # Si es menor, no divida un nodo
+        ratio_samples = 1 # Toma de muestras con sustitución
+        num_trees = 250     #Número de árboles de decisión
+        multiprocessing.cpu_count() == 8
+        num_features=X_train.shape[1]
+        num_random_features = int(np.sqrt(num_features)) #Número de características a tener en cuenta en cada nodo cuando se busca la mejor división
+        
+        time_start=time.time()
+        rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, impurity, extra_trees)
+        #Entrena el modelo
+        #entrenar = tomar la decisión árboles
+        rf.fit(X_train, y_train, mode) 
+
+        # clasificacion           
+        ypred = rf.predict(X_test) 
+        # compute accuracy
+        num_samples_test = len(y_test)
+        num_correct_predictions = np.sum(ypred == y_test)
+        accuracy = num_correct_predictions/float(num_samples_test)
+        if float(num_samples_test)==0:
+            logging.warning('Number of samples is zero')
+
+        print('\n\nAccuracy {} %'.format(100*np.round(accuracy,decimals=2)))
+        logging.info('Accuracy: %.2f %%', 100*np.round(accuracy, decimals=2))
+        time_end = time.time()  # <-- Detener temporizador TOTAL
+        total_time = time_end-time_start
+        
+        print(f'Total Time: {int(total_time // 60)}min {(total_time % 60):.4f}s\n\n')  # Formato MM min SS sec
+        logging.info('Total Time: %d min %.4fs\n', int(total_time // 60), (total_time % 60))
+
+        rf.print_trees()
+        dataset.test_occurences(rf)
+
+        
+        print("\n|------------------------------------------------------------------------------|")
+        logging.info('----- Script ended -----')
+
+            
 
 
-    # Nuevo input para Extra-Trees
-    extra_trees = input("Use Extra-Trees optimization? (yes/no): ").lower().strip() == 'yes'
+            
 
-    mode=input(str("Mode (sequential/parallel): ")).lower()
-    while mode not in ['sequential', 'parallel']:        
-        mode = input("Invalid mode. Choose (sequential/parallel): ").lower()
 
-    rf = RandomForestClassifier(num_trees, min_size_split, max_depth, ratio_samples, num_random_features, impurity, extra_trees)
-
-    #Entrena el modelo
-    #entrenar = tomar la decisión árboles
-    rf.fit(X_train, y_train, mode) 
-
-    # clasificacion           
-    ypred = rf.predict(X_test) 
-    # compute accuracy
-    num_samples_test = len(y_test)
-    num_correct_predictions = np.sum(ypred == y_test)
-    accuracy = num_correct_predictions/float(num_samples_test)
-    if float(num_samples_test)==0:
-        logging.warning('Number of samples is zero')
-
-    print('\n\nAccuracy {} %\n'.format(100*np.round(accuracy,decimals=2)))
-    logging.info('Accuracy: %.2f %%', 100*np.round(accuracy, decimals=2))
-    time_end = time.time()  # <-- Detener temporizador TOTAL
-    total_time = time_end-time_start
-    
-    print(f'Total Time: {int(total_time // 60)}min {(total_time % 60):.4f}s\n')  # Formato MM min SS sec
-    logging.info('Total Time: %d min %.4fs\n', int(total_time // 60), (total_time % 60))
-
-    logging.info('----- Script ended -----')

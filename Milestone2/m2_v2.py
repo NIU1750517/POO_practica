@@ -424,6 +424,10 @@ class Mnist(Import):
         return Xtrain, ytrain, Xtest, ytest
     
     def test_occurrences(self, rf):
+        """Calcula y visualiza la frecuencia de uso de cada característica en un modelo de bosque aleatorio.
+        Utiliza el método 'feature_importance' para obtener cuántas veces ha sido utilizada cada característica
+        en los árboles de decisión.
+        Muestra los resultados como una imagen con una escala de colores, donde cada píxel representa una característica"""
         occurrences = rf.feature_importance()
         ima = np.zeros(28*28)
         for k in occurrences.keys():
@@ -436,11 +440,14 @@ class Mnist(Import):
         
 class Temperatures(Import):
     def import_dataset(self):
+        """Carga el conjunto de datos de temperaturas mínimas diarias registradas en Melbourne, Australia (1981–1990).
+        Las unidades están en grados Celsius.
+        Convierte la columna de fechas en tres características separadas: día, mes y año.
+        La temperatura mínima diaria se usa como variable objetivo (y)."""
+        
         df = pd.read_csv('https://raw.githubusercontent.com/jbrownlee/'
         'Datasets/master/daily-min-temperatures.csv')
-        # Minimum Daily Temperatures Dataset over 10 years (1981-1990)
-        # in Melbourne, Australia. The units are in degrees Celsius.
-        # These are the features to regress:
+        #These are the features to regress:
         day = pd.DatetimeIndex(df.Date).day.to_numpy() # 1...31
         month = pd.DatetimeIndex(df.Date).month.to_numpy() # 1...12
         year = pd.DatetimeIndex(df.Date).year.to_numpy() # 1981...1999
@@ -453,6 +460,7 @@ class Temperatures(Import):
 
     
     def test_regression(self, last_years_test=1):
+        """ Entrena y evalúa un modelo de bosque aleatorio para regresión usando el dataset de temperaturas."""
         X, y = self.import_dataset()
         plt.plot(y,'.-')
         plt.xlabel('day in 10 years'), plt.ylabel('min. daily temperature')
@@ -494,9 +502,13 @@ class Visitor(ABC):
 
 class FeatureImportance(Visitor):
     def __init__(self):
+        """Se inicializa un diccionario para contar las veces que se utiliza cada característica."""
         self.occurrences = {}
 
     def visitParent(self, node):
+        """Método que se llama al visitar un nodo Parent donde se registra la característica utilizada en ese nodo
+        e incrementa su contador en el diccionario.
+        Luego recorre recursivamente los hijos izquierdo y derecho."""
         k = node.feature_index 
         self.occurrences[k] = self.occurrences.get(k, 0) + 1
         node.left_child.acceptVisitor(self)
@@ -511,6 +523,9 @@ class PrinterTree(Visitor):
         self._depth = depth
     
     def visitParent(self, node):
+        """Método que se llama visitar un nodo Parent. 
+        Se escribe en el archivo una línea indicando el índice de la característica y el umbral utilizados en la división.
+        Luego recorre recursivamente los hijos izquierdo y derecho, aumentando la profundidad"""
         self._file.write('\t'*self._depth + 'parent, features indx. {}, threshold {:.2f}\n'.format(node.feature_index, node.threshold))
         self._depth += 1
         node.left_child.acceptVisitor(self)
@@ -518,6 +533,8 @@ class PrinterTree(Visitor):
         self._depth -= 1
     
     def visitLeaf(self, node):
+        """Método que se llama al visitar una hoja del árbol.
+        Escribe en el archivo el valor objetivo (label) asignado en esa hoja"""
         self._file.write('\t'*self._depth + 'leaf, label {}\n'.format(node.label))
 
 # ---------------------------------------------------------- MAIN ----------------------------------------

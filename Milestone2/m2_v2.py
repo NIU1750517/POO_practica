@@ -374,6 +374,12 @@ class Iris(Import):
         occurrences = rf.feature_importance()
         print('Iris occurrences for {} trees:'.format(rf.num_trees))
         print("\t", occurrences)
+        counts = np.array(list(occurrences.items()))
+        plt.figure(), plt.bar(counts[:, 0], counts[:, 1])
+        plt.xlabel('feature')
+        plt.ylabel('occurrences')
+        plt.title('Iris feature importance\n{} trees'.format(rf.num_trees))
+        plt.show()
 
 class Sonar(Import):
     def import_dataset(self):
@@ -393,7 +399,7 @@ class Sonar(Import):
         plt.figure(), plt.bar(counts[:, 0], counts[:, 1])
         plt.xlabel('feature')
         plt.ylabel('occurrences')
-        plt.title('Sonar feature importance\n{} trees'.format(rf.num_trees))
+        plt.title(' feature importance\n{} trees'.format(rf.num_trees))
         plt.show()
 
 class Mnist(Import):
@@ -413,8 +419,7 @@ class Mnist(Import):
         plt.imshow(np.reshape(ima,(28,28)))
         plt.colorbar()
         plt.title('Feature importance MNIST')
-        plt.show()
-        
+        plt.show()        
         
 class Temperatures(Import):
     def import_dataset(self):
@@ -429,6 +434,10 @@ class Temperatures(Import):
         X = np.vstack([day, month, year]).T # np array of 3 columns
         y = df.Temp.to_numpy()
         return X, y
+    
+    def test_occurrences(self, rf):
+        pass
+
     
     def test_regression(self, last_years_test=1):
         X, y = self.import_dataset()

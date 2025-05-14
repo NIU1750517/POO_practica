@@ -209,12 +209,14 @@ class RandomForest(ABC):
         logging.debug('Parallel training completed in %.2f seconds (%.2f sec/tree)', t2-t1, (t2-t1)/self.num_trees)
 
     def feature_importance(self):
+        """Calcula la importancia de cada característica según cuántas veces se ha utilizado para dividir nodos en todos los árboles del bosque"""
         feat_imp_visitor = FeatureImportance()
         for tree in self.trees:
             tree.acceptVisitor(feat_imp_visitor) 
         return feat_imp_visitor.occurrences
 
     def print_trees(self):
+        """Crea un archivo de texto en el que guarda la representación de todos los árboles del bosque"""
         filename = 'decisiontrees.txt'
         with open(filename, 'w', encoding='utf-8') as f:
             for i, tree in enumerate(self.trees):
@@ -239,10 +241,11 @@ class RandomForest(ABC):
 class RandomForestClassifier(RandomForest):
     @staticmethod
     def _combinePredictions(predictions):
+        """Combina las predicciones de todos los árboles usando votación mayoritaria"""
         return np.argmax(np.bincount(predictions))
 
     def _make_leaf(self, dataset): 
-        """Crea una hoja del árbol , devolviendo la clase mas frecuente en ese grupo de datos (label)"""  
+        """Crea una hoja del árbol , devolviendo la clase más frecuente en ese grupo de datos (label)"""  
         logging.info('Leaf created') 
         logging.info('Most frequent label: %s', dataset.most_frequent_label())
         return Leaf(dataset.most_frequent_label())
@@ -250,12 +253,13 @@ class RandomForestClassifier(RandomForest):
 class RandomForestRegression(RandomForest):
     @staticmethod
     def _combinePredictions(predictions):
+        """Combina las predicciones de todos los árboles cogiendo la media"""
         return np.mean(predictions)
 
     def _make_leaf(self, dataset): 
-        """Crea una hoja del árbol , devolviendo la clase mas frecuente en ese grupo de datos (label)"""  
+        """Crea una hoja del árbol , devolviendo el valor medio de las etiquetas (los valores objetivo, y) en ese grupo de datos"""  
         logging.info('Leaf created') 
-        logging.info('Most frequent label: %s', dataset.most_frequent_label())
+        logging.info('Most frequent label: %s', dataset.mean_value())
         return Leaf(dataset.mean_value())    
 
 
@@ -287,19 +291,20 @@ class Leaf(Node):
         v.visitLeaf(self)
 
 class Parent(Node):
-    """Representa un nodo del árbol, pero en este caso si se toman decisiones"""
+    """Representa un nodo del árbolque toma decisiones basadas en una característica y un umbral"""
     def __init__(self, feature_index, threshold):
         self.feature_index = feature_index
         self.threshold = threshold # umbral
 
     def predict(self, X):
-        """Revisa el valor de X en la posición feature_index"""
+        """Revisa el valor de X en la posición feature_index y realiza una predicción"""
         if X[self.feature_index]<self.threshold:
             return self.left_child.predict(X)
         else: 
             return self.right_child.predict(X) 
 
     def acceptVisitor(self, v):
+        """Permite que un visitante interactúe con este nodo"""
         v.visitParent(self)
 
 class ImpurityMeasure(ABC):
@@ -371,6 +376,10 @@ class Iris(Import):
         return X_train, y_train, X_test, y_test
     
     def test_occurrences(self, rf):
+        """Calcula y visualiza la frecuencia de uso de cada característica en un modelo de bosque aleatorio.
+        Utiliza el método 'feature_importance' para obtener cuántas veces ha sido utilizada cada característica
+        en los árboles de decisión.
+        Muestra los resultados en un gráfico de barras."""
         occurrences = rf.feature_importance()
         print('Iris occurrences for {} trees:'.format(rf.num_trees))
         print("\t", occurrences)
@@ -394,6 +403,10 @@ class Sonar(Import):
         return X_train, y_train, X_test, y_test
     
     def test_occurrences(self, rf):
+        """Calcula y visualiza la frecuencia de uso de cada característica en un modelo de bosque aleatorio.
+        Utiliza el método 'feature_importance' para obtener cuántas veces ha sido utilizada cada característica
+        en los árboles de decisión.
+        Muestra los resultados en un gráfico de barras."""
         occurrences = rf.feature_importance() # a dictionary
         counts = np.array(list(occurrences.items()))
         plt.figure(), plt.bar(counts[:, 0], counts[:, 1])

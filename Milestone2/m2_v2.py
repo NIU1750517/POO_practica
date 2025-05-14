@@ -359,7 +359,7 @@ class Import(ABC):
         return X_train, y_train, X_test, y_test
     
     @abstractmethod
-    def test_occurences(self, rf):
+    def test_occurrences(self, rf):
         pass
 
 class Iris(Import):
@@ -370,10 +370,10 @@ class Iris(Import):
         X_train,y_train,X_test,y_test = self.divide_dataset(X,y)
         return X_train, y_train, X_test, y_test
     
-    def test_occurences(self, rf):
+    def test_occurrences(self, rf):
         occurrences = rf.feature_importance()
         print('Iris occurrences for {} trees:'.format(rf.num_trees))
-        print("\t{}", occurrences)
+        print("\t", occurrences)
 
 class Sonar(Import):
     def import_dataset(self):
@@ -387,13 +387,14 @@ class Sonar(Import):
         X_train,y_train,X_test,y_test = self.divide_dataset(X,y)
         return X_train, y_train, X_test, y_test
     
-    def test_occurences(self, rf):
+    def test_occurrences(self, rf):
         occurrences = rf.feature_importance() # a dictionary
         counts = np.array(list(occurrences.items()))
         plt.figure(), plt.bar(counts[:, 0], counts[:, 1])
         plt.xlabel('feature')
         plt.ylabel('occurrences')
         plt.title('Sonar feature importance\n{} trees'.format(rf.num_trees))
+        plt.show()
 
 class Mnist(Import):
     def import_dataset(self):
@@ -403,13 +404,7 @@ class Mnist(Import):
         Xtrain, ytrain, Xtest, ytest = mnist["training_images"], mnist["training_labels"], mnist["test_images"], mnist["test_labels"]
         return Xtrain, ytrain, Xtest, ytest
     
-    def test_occurences(self, rf):
-        if not os.path.exists('rf_mnist.pkl'):
-            with open('rf_mnist.pkl', 'wb') as f:
-                pickle.dump(rf, f)
-        else:
-            with open('rf_mnisit.pkl', 'rb') as f:
-                rf = pickle.loaf(f)
+    def test_occurrences(self, rf):
         occurrences = rf.feature_importance()
         ima = np.zeros(28*28)
         for k in occurrences.keys():
@@ -418,6 +413,7 @@ class Mnist(Import):
         plt.imshow(np.reshape(ima,(28,28)))
         plt.colorbar()
         plt.title('Feature importance MNIST')
+        plt.show()
         
         
 class Temperatures(Import):
@@ -553,7 +549,7 @@ if __name__ == '__main__':
         max_depth = 10    # Número máximo de niveles de un árbol de decisión
         min_size_split = 25  # Si es menor, no divida un nodo
         ratio_samples = 1 # Toma de muestras con sustitución
-        num_trees = 250     #Número de árboles de decisión
+        num_trees = 50     #Número de árboles de decisión
         multiprocessing.cpu_count() == 8
         num_features=X_train.shape[1]
         num_random_features = int(np.sqrt(num_features)) #Número de características a tener en cuenta en cada nodo cuando se busca la mejor división
@@ -582,7 +578,7 @@ if __name__ == '__main__':
         logging.info('Total Time: %d min %.4fs\n', int(total_time // 60), (total_time % 60))
 
         rf.print_trees()
-        dataset.test_occurences(rf)
+        dataset.test_occurrences(rf)
 
         
         print("\n|------------------------------------------------------------------------------|")

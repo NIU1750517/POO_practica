@@ -1,0 +1,139 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+' - added class Criterion and derivatives that contains what's common of all
+'   criteria, before in RandomForestClassifier
+
+skinparam classAttributeIconSize 0
+skinparam noteFontSize 11
+'skinparam linetype ortho
+'skinparam linetype polyline
+
+abstract class RandomForest {
+- num_trees : int
+- min_size : int
+- max_depth : int
+- ratio_samples : float
+- num_random_features : float
+- criterion : Criterion
+- trees : list
+- training_time : float
+-extra_trees : bool
++ fit (X : float[][], y : float[],mode : str)
+- make_decision_trees(dataset : DataSet)
+- make_node (dataset : DataSet, depth : int) : Node
+- make_leaf (dataset : DataSet) : Leaf
+- make_parent_or_leaf (dataset : Dataset, depth : int) : Node
+- best_split (index_features : int, dataset : DataSet) : (float, float, float, list)
+- Cart_cost( left: DataSet, right : DataSet) : float
++ predict (X : float[][]) : int[]
+- target (dataset : DataSet,nproc : int ) : Tree
+- make_decision_trees_multiprocessing(dataset : Dataset)
+- feature_importance( ) : dict
+- print_trees( )
+- other_method_traversing_trees( )
+-{abstract} _combinePredictions(float) : void
+-{abstract} _make_leaf(dataset) : void
+}
+class RandomForestClassifier {
+    +_combinePredictions(predictions) : int
+    +_make_leaf(dataset) : Leaf
+}
+
+class RandomForestRegression {
+    +_combinePredictions(predictions) : float
+    +_make_leaf(dataset) : Leaf
+}
+class DataSet{
+    + X : float[]
+    + y : float[]
+    - num_samples : int 
+    - num_features : int
+    - get_num_samples(): int
+    - get_num_features(): int
+    - random_sampling(ratio_samples : float) : DataSet
+    - split (index : int, val : float) : (DataSet, DataSet)
+    - most_frequent_label() : int
+    - mean_value() : float 
+
+}
+abstract Import{
+    + {abstract} import_dataset (): float[],float[],float[],float[]
+    + divide_dataset ( X : Dataset, y : Dataset): float[],float[],float[],float[]
+    + {abstract} test_occurrences( rf : RandomForest)
+}
+class Iris implements Import{
+    + import_dataset (): float[],float[],float[],float[]
+    + test_occurrences( rf : RandomForest)
+}
+class Sonar implements Import{
+    + import_dataset (): float[],float[],float[],float[]
+    + test_occurrences( rf : RandomForest)
+}
+class Mnist implements Import{
+    + import_dataset (): float[],float[],float[],float[]
+    + test_occurrences( rf : RandomForest)
+}
+class Temperatures implements Import{
+    + import_dataset (): float[],float[]
+    + test_occurrences( rf : RandomForest)
+    + test_regression (last_year_test : int)
+}
+interface ImpurityMeasure {
+   + {abstract} compute(x : Dataset) : float
+}
+class Gini implements ImpurityMeasure {
+    + compute(x : Dataset) : float
+}
+class Entropy implements ImpurityMeasure {
+    + compute(x : Dataset) : float
+}
+class SumSquareError implements ImpurityMeasure {
+    + compute(x : Dataset) : float
+}
+interface Node {
++ {abstract} predict(x : float[]) : int
++ {abstract} acceptVisitor(v : Visitor) 
+
+}
+
+class Leaf implements Node {
+- label : int
++ predict(x : float[]) : int
++ acceptVisitor(v : Visitor) 
+}
+
+class Parent implements Node {
+- feature_index : int
+- threshold : float
++ predict (x : float[]) : int
++ acceptVisitor(v : Visitor) 
+}
+
+abstract class Visitor{
+    + {abstract} visitParent(node : Node)
+    + {abstract} visitLeaf(node : Node) 
+}
+class FeatureImportance implements Visitor{
+    + occurrences : dict
+    + visitParent(node : Node)
+    + visitLeaf (node : Node)
+}
+class PrinterTree implements Visitor{
+    +file : file
+    + depth : float
+    + visitParent(node : Node)
+    + visitLeaf (node : Node)
+}
+' associacions
+RandomForest *-right-> "1..*" Node : decision_trees
+RandomForest <|-- RandomForestClassifier
+RandomForest <|-- RandomForestRegression
+RandomForest *-up-> "1"  DataSet 
+Parent -down-> "1" Node : left_child
+Parent -down-> "1" Node : right_child
+Import -right-> RandomForest : uses num_features, fit()
+
+' positionament
+'RandomForestClassifier -[hidden]-> Node
+@enduml

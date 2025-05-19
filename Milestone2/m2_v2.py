@@ -231,7 +231,7 @@ class RandomForest(ABC):
         pass
 
     @abstractmethod
-    def _combinePredictions(float):
+    def _combinePredictions(self, predictions):
         pass
 
     @abstractmethod

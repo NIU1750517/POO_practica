@@ -291,9 +291,10 @@ class Leaf(Node):
 
 class Parent(Node):
     """Represents a node in the tree that makes decisions based on a feature and a threshold"""
-    def __init__(self, feature_index, threshold):
+    def __init__(self, feature_index, threshold, left_child, right_child):
+        super().__init__(left_child, right_child)
         self.feature_index = feature_index
-        self.threshold = threshold # umbral
+        self.threshold = threshold 
 
     def predict(self, X):
         """Check the value of X at position feature_index and make a prediction"""

@@ -90,6 +90,7 @@ class RandomForest(ABC):
         logging.info(f'RandomForest init: trees={num_trees}, min_size={min_size}, max_depth={max_depth}, samples_ratio={ratio_samples}, rand_feats={num_random_features}, extra_trees={extra_trees}')
 
 
+
     def fit(self, X, y, mode):
         """Entrena el bosque de árboles de decisión usando el conjunto de datos"""
         logging.info(f'Start training ({mode})')

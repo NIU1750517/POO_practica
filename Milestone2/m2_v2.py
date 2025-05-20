@@ -29,6 +29,7 @@ class DataSet:
     def __init__(self, X, y):
         self.X = np.array(X)
         self.y = np.array(y)
+        logging.debug(f'DataSet initialized with {self.X.shape[0]} samples and {self.X.shape[1] if self.X.size else 0} features')
         
     """X es una matriz de informacion"""         
     @property
@@ -46,12 +47,14 @@ class DataSet:
         """Muestra un subconjunto del dataset con reemplazo usando
         np.random.choice() para obtener los índices de las filas en X e y """
         idx = np.random.choice(range(self.get_num_samples), int(self.get_num_samples*ratio_samples), replace=True)
+        logging.debug(f'Random sampling with ratio {ratio_samples}: sampled {len(idx)} indices')
         return DataSet(self.X[idx], self.y[idx])
     
     def split(self, idx, val): 
         """Divide el dataset en dos subconjuntos basandose en el valor de una caracterÍstica (umbral)"""
         left_idx = self.X[:, idx] < val
         right_idx = self.X[:, idx] >= val
+        logging.debug(f'Splitting on feature {idx} at {val}: left {left_idx.sum()}, right {right_idx.sum()}')
         left_dataset = DataSet(self.X[left_idx], self.y[left_idx])
         right_dataset = DataSet(self.X[right_idx], self.y[right_idx])
         return left_dataset, right_dataset
@@ -59,14 +62,18 @@ class DataSet:
     def most_frequent_label(self):
         """Devuelve el valor objetivo (y) que aparece con más frecuencia en el dataset"""
         unique, counts = np.unique(self.y, return_counts=True)
-        return unique[np.argmax(counts)]
+        label = unique[np.argmax(counts)]
+        logging.debug(f'Most frequent label computed: {label}')
+        return label
     
     def mean_value(self):
         """Calcula la media del target y. Maneja conjuntos vacíos."""
         if self.y.size == 0:  # Si no hay muestras
             logging.warning('Empty dataset in mean_value(), returning 0.0')
             return 0.0
-        return np.mean(self.y)
+        mean_val = np.mean(self.y)
+        logging.debug(f'Mean target value computed: {mean_val:.4f}')
+        return mean_val
     
 class RandomForest(ABC):
     """Implementa un random forest,, un conjunto de árboles de decisión entrenados con diferentes subconjuntos de datos y características"""
@@ -80,14 +87,19 @@ class RandomForest(ABC):
         self.trees = []
         self.training_time = 0 
         self.extra_trees = extra_trees 
+        logging.info(f'RandomForest init: trees={num_trees}, min_size={min_size}, max_depth={max_depth}, samples_ratio={ratio_samples}, rand_feats={num_random_features}, extra_trees={extra_trees}')
+
 
     def fit(self, X, y, mode):
         """Entrena el bosque de árboles de decisión usando el conjunto de datos"""
+        logging.info(f'Start training ({mode})')
         dataset = DataSet(X,y)
         if mode=='sequential':
             self._make_decision_trees(dataset)
         elif mode=='parallel':
             self._make_decision_trees_multiprocessing(dataset)
+        logging.info(f'Forest trained')
+
      
     def _make_decision_trees(self, dataset):
         """Entrena todos los árboles uno por uno en modo secuencial"""
@@ -453,6 +465,7 @@ class Temperatures(Import):
         year = pd.DatetimeIndex(df.Date).year.to_numpy() # 1981...1999
         X = np.vstack([day, month, year]).T # np array of 3 columns
         y = df.Temp.to_numpy()
+        logging.info(f'Temperatures dataset imported: {len(y)} samples')
         return X, y
     
     def test_occurrences(self, rf):
@@ -461,10 +474,11 @@ class Temperatures(Import):
     
     def test_regression(self, last_years_test=1):
         """ Entrena y evalúa un modelo de bosque aleatorio para regresión usando el dataset de temperaturas."""
+        logging.info('Starting regression test for Temperatures')
         X, y = self.import_dataset()
         plt.plot(y,'.-')
         plt.xlabel('day in 10 years'), plt.ylabel('min. daily temperature')
-        idx = last_years_test*365
+        idx = last_years_test*365*2
         Xtrain = X[:-idx,:] # first years
         Xtest = X[-idx:]
         ytrain = y[:-idx] # last years
@@ -481,11 +495,12 @@ class Temperatures(Import):
         plt.plot([x[0], x[0]],[ytest[0], ypred[0]], 'k-', label='error')
         plt.plot(x, ytest, 'g.', label='test')
         plt.plot(x, ypred, 'y.', label='prediction')
-        plt.xlabel('day in last {} years'.format(last_years_test))
+        plt.xlabel('day in last {} years'.format(2))
         plt.ylabel('min. daily temperature')
         plt.legend()
         errors = ytest - ypred
         rmse = np.sqrt(np.mean(errors**2))
+        logging.info(f'Regression completed: RMSE={rmse:.3f}')
         plt.title('root mean square error : {:.3f}'.format(rmse))
         plt.show()
 
@@ -511,6 +526,7 @@ class FeatureImportance(Visitor):
         Luego recorre recursivamente los hijos izquierdo y derecho."""
         k = node.feature_index 
         self.occurrences[k] = self.occurrences.get(k, 0) + 1
+        logging.debug(f'Feature {k} used for split, total occurrences now {self.occurrences[k]}')
         node.left_child.acceptVisitor(self)
         node.right_child.acceptVisitor(self)
     

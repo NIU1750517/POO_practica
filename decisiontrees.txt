@@ -1,1204 +1,784 @@
 decision tree 1
-parent, features indx. 8, threshold 0.14
-	parent, features indx. 3, threshold 0.06
-		parent, features indx. 10, threshold 0.24
-			parent, features indx. 39, threshold 0.27
-				leaf, label 0
-				leaf, label 0
-			leaf, label 1
-		leaf, label 1
-	parent, features indx. 36, threshold 0.48
-		parent, features indx. 29, threshold 0.35
-			leaf, label 1
-			parent, features indx. 18, threshold 0.28
-				leaf, label 1
-				parent, features indx. 18, threshold 0.28
-					leaf, label 1
-					parent, features indx. 15, threshold 0.14
-						leaf, label 1
-						parent, features indx. 30, threshold 0.36
-							leaf, label 1
-							parent, features indx. 29, threshold 0.52
-								leaf, label 1
-								parent, features indx. 54, threshold 0.00
-									leaf, label 1
-									leaf, label 1
+parent, features indx. 0, threshold 7.47
+	parent, features indx. 3, threshold 0.61
 		leaf, label 0
+		parent, features indx. 2, threshold 4.68
+			leaf, label 1
+			parent, features indx. 0, threshold 5.85
+				leaf, label 2
+				parent, features indx. 2, threshold 5.22
+					leaf, label 1
+					leaf, label 2
+	leaf, label 2
 decision tree 2
-parent, features indx. 50, threshold 0.01
-	parent, features indx. 22, threshold 0.87
-		parent, features indx. 34, threshold 0.23
-			leaf, label 0
-			parent, features indx. 26, threshold 0.89
-				leaf, label 0
-				leaf, label 0
-		leaf, label 1
-	parent, features indx. 48, threshold 0.04
-		parent, features indx. 10, threshold 0.20
-			leaf, label 0
+parent, features indx. 3, threshold 0.66
+	leaf, label 0
+	parent, features indx. 0, threshold 7.42
+		parent, features indx. 2, threshold 3.57
 			leaf, label 1
-		parent, features indx. 35, threshold 0.68
-			parent, features indx. 27, threshold 0.34
-				leaf, label 1
-				parent, features indx. 44, threshold 0.07
+			parent, features indx. 2, threshold 4.88
+				parent, features indx. 0, threshold 5.96
 					leaf, label 1
-					parent, features indx. 49, threshold 0.01
-						leaf, label 1
-						parent, features indx. 24, threshold 0.49
-							leaf, label 1
-							leaf, label 1
-			leaf, label 1
+					leaf, label 1
+				parent, features indx. 2, threshold 4.97
+					leaf, label 1
+					leaf, label 2
+		leaf, label 2
 decision tree 3
-parent, features indx. 11, threshold 0.19
-	parent, features indx. 48, threshold 0.10
-		parent, features indx. 35, threshold 0.17
-			leaf, label 0
-			leaf, label 0
+parent, features indx. 2, threshold 3.37
+	parent, features indx. 2, threshold 1.26
 		leaf, label 0
-	parent, features indx. 10, threshold 0.17
-		leaf, label 0
-		parent, features indx. 27, threshold 0.49
-			leaf, label 1
-			parent, features indx. 52, threshold 0.00
+		parent, features indx. 1, threshold 3.53
+			parent, features indx. 1, threshold 2.81
+				leaf, label 1
 				leaf, label 0
-				parent, features indx. 5, threshold 0.07
-					leaf, label 1
-					parent, features indx. 34, threshold 0.08
-						leaf, label 1
-						parent, features indx. 38, threshold 0.14
-							leaf, label 1
-							parent, features indx. 39, threshold 0.15
-								leaf, label 1
-								parent, features indx. 55, threshold 0.00
-									leaf, label 1
-									leaf, label 1
+			leaf, label 0
+	parent, features indx. 1, threshold 2.70
+		parent, features indx. 1, threshold 2.03
+			leaf, label 1
+			leaf, label 1
+		parent, features indx. 3, threshold 2.42
+			parent, features indx. 3, threshold 1.89
+				leaf, label 1
+				leaf, label 2
+			leaf, label 2
 decision tree 4
-parent, features indx. 12, threshold 0.15
-	parent, features indx. 48, threshold 0.04
-		leaf, label 0
-		leaf, label 1
-	parent, features indx. 57, threshold 0.01
-		parent, features indx. 50, threshold 0.01
-			parent, features indx. 25, threshold 0.91
-				parent, features indx. 49, threshold 0.04
-					leaf, label 0
-					leaf, label 1
-				leaf, label 1
-			parent, features indx. 8, threshold 0.11
-				leaf, label 0
-				parent, features indx. 33, threshold 0.16
-					leaf, label 0
-					leaf, label 1
-		parent, features indx. 55, threshold 0.01
-			parent, features indx. 32, threshold 0.65
-				parent, features indx. 58, threshold 0.00
-					leaf, label 0
-					parent, features indx. 38, threshold 0.22
-						leaf, label 1
-						parent, features indx. 47, threshold 0.02
-							leaf, label 1
-							parent, features indx. 37, threshold 0.16
-								leaf, label 1
-								parent, features indx. 42, threshold 0.16
-									leaf, label 1
-									leaf, label 1
-				leaf, label 0
+parent, features indx. 2, threshold 6.36
+	parent, features indx. 2, threshold 5.58
+		parent, features indx. 2, threshold 2.59
 			leaf, label 0
+			parent, features indx. 3, threshold 2.29
+				parent, features indx. 0, threshold 6.66
+					parent, features indx. 2, threshold 5.30
+						parent, features indx. 1, threshold 2.92
+							parent, features indx. 2, threshold 4.86
+								parent, features indx. 3, threshold 1.70
+									leaf, label 1
+									leaf, label 2
+								leaf, label 2
+							leaf, label 1
+						leaf, label 2
+					leaf, label 1
+				leaf, label 2
+		leaf, label 2
+	leaf, label 2
 decision tree 5
-parent, features indx. 44, threshold 0.31
-	parent, features indx. 12, threshold 0.27
-		parent, features indx. 26, threshold 0.92
-			parent, features indx. 8, threshold 0.16
-				parent, features indx. 47, threshold 0.09
-					leaf, label 0
-					leaf, label 0
-				leaf, label 0
-			leaf, label 0
-		parent, features indx. 21, threshold 0.79
-			parent, features indx. 48, threshold 0.04
-				leaf, label 0
-				leaf, label 1
-			leaf, label 1
-	parent, features indx. 25, threshold 0.28
+parent, features indx. 0, threshold 4.52
+	leaf, label 0
+	parent, features indx. 2, threshold 2.64
 		leaf, label 0
-		parent, features indx. 32, threshold 0.24
-			leaf, label 1
-			leaf, label 1
+		parent, features indx. 3, threshold 1.69
+			parent, features indx. 1, threshold 2.14
+				leaf, label 1
+				parent, features indx. 1, threshold 2.98
+					parent, features indx. 1, threshold 2.87
+						leaf, label 1
+						leaf, label 1
+					leaf, label 1
+			leaf, label 2
 decision tree 6
-parent, features indx. 8, threshold 0.12
-	parent, features indx. 34, threshold 0.16
-		leaf, label 1
-		parent, features indx. 12, threshold 0.23
-			leaf, label 0
-			leaf, label 0
-	parent, features indx. 47, threshold 0.08
-		parent, features indx. 45, threshold 0.08
-			leaf, label 0
-			leaf, label 1
-		parent, features indx. 33, threshold 0.17
-			leaf, label 1
-			parent, features indx. 48, threshold 0.04
-				leaf, label 1
-				parent, features indx. 32, threshold 0.31
+parent, features indx. 2, threshold 1.51
+	leaf, label 0
+	parent, features indx. 0, threshold 6.81
+		parent, features indx. 1, threshold 3.40
+			parent, features indx. 3, threshold 1.78
+				parent, features indx. 2, threshold 4.48
 					leaf, label 1
-					parent, features indx. 12, threshold 0.18
-						leaf, label 1
-						parent, features indx. 35, threshold 0.09
-							leaf, label 1
-							parent, features indx. 40, threshold 0.20
-								leaf, label 1
-								parent, features indx. 9, threshold 0.13
-									leaf, label 1
-									leaf, label 1
+					leaf, label 1
+				parent, features indx. 0, threshold 6.33
+					leaf, label 2
+					leaf, label 2
+			leaf, label 0
+		leaf, label 2
 decision tree 7
-parent, features indx. 10, threshold 0.21
-	parent, features indx. 51, threshold 0.01
-		parent, features indx. 38, threshold 0.47
-			leaf, label 0
-			leaf, label 0
-		leaf, label 0
-	parent, features indx. 16, threshold 0.70
-		parent, features indx. 44, threshold 0.11
+parent, features indx. 3, threshold 0.82
+	leaf, label 0
+	parent, features indx. 3, threshold 2.28
+		parent, features indx. 1, threshold 2.63
 			leaf, label 1
-			parent, features indx. 3, threshold 0.12
-				parent, features indx. 35, threshold 0.73
-					leaf, label 1
-					leaf, label 1
+			parent, features indx. 3, threshold 1.79
 				leaf, label 1
-		leaf, label 0
+				parent, features indx. 2, threshold 4.87
+					leaf, label 2
+					leaf, label 2
+		leaf, label 2
 decision tree 8
-parent, features indx. 51, threshold 0.01
-	parent, features indx. 12, threshold 0.25
-		leaf, label 0
-		leaf, label 0
-	parent, features indx. 11, threshold 0.19
-		parent, features indx. 55, threshold 0.01
-			leaf, label 0
-			leaf, label 1
-		parent, features indx. 12, threshold 0.25
-			leaf, label 1
-			parent, features indx. 56, threshold 0.01
-				parent, features indx. 27, threshold 0.46
-					leaf, label 1
-					parent, features indx. 24, threshold 0.58
-						leaf, label 1
-						parent, features indx. 27, threshold 0.66
-							leaf, label 1
-							parent, features indx. 35, threshold 0.04
+parent, features indx. 1, threshold 3.83
+	parent, features indx. 1, threshold 2.56
+		leaf, label 1
+		parent, features indx. 1, threshold 3.69
+			parent, features indx. 2, threshold 1.76
+				leaf, label 0
+				parent, features indx. 0, threshold 7.21
+					parent, features indx. 3, threshold 2.33
+						parent, features indx. 3, threshold 1.93
+							parent, features indx. 1, threshold 2.67
 								leaf, label 1
-								parent, features indx. 58, threshold 0.00
+								parent, features indx. 2, threshold 5.25
 									leaf, label 1
-									leaf, label 1
-				leaf, label 1
+									leaf, label 2
+							leaf, label 2
+						leaf, label 2
+					leaf, label 2
+			leaf, label 0
+	leaf, label 0
 decision tree 9
-parent, features indx. 45, threshold 0.22
-	parent, features indx. 36, threshold 0.26
-		parent, features indx. 57, threshold 0.00
+parent, features indx. 1, threshold 3.12
+	parent, features indx. 0, threshold 4.40
+		leaf, label 0
+		parent, features indx. 3, threshold 0.74
 			leaf, label 0
-			parent, features indx. 7, threshold 0.09
-				leaf, label 0
-				leaf, label 1
-		parent, features indx. 9, threshold 0.06
+			parent, features indx. 2, threshold 5.33
+				parent, features indx. 2, threshold 4.83
+					parent, features indx. 2, threshold 3.73
+						leaf, label 1
+						leaf, label 1
+					leaf, label 2
+				leaf, label 2
+	parent, features indx. 2, threshold 1.46
+		leaf, label 0
+		parent, features indx. 2, threshold 4.50
 			leaf, label 0
-			parent, features indx. 19, threshold 0.59
-				leaf, label 0
-				leaf, label 0
-	parent, features indx. 12, threshold 0.25
-		leaf, label 1
-		parent, features indx. 2, threshold 0.02
-			leaf, label 1
-			leaf, label 1
+			leaf, label 2
 decision tree 10
-parent, features indx. 11, threshold 0.24
-	parent, features indx. 1, threshold 0.06
-		parent, features indx. 9, threshold 0.15
-			parent, features indx. 19, threshold 0.50
-				leaf, label 0
-				leaf, label 0
-			leaf, label 0
-		leaf, label 1
-	parent, features indx. 50, threshold 0.01
-		parent, features indx. 51, threshold 0.01
-			leaf, label 0
-			leaf, label 1
-		parent, features indx. 10, threshold 0.18
-			leaf, label 1
-			parent, features indx. 4, threshold 0.02
+parent, features indx. 2, threshold 1.50
+	leaf, label 0
+	parent, features indx. 1, threshold 3.36
+		parent, features indx. 0, threshold 7.59
+			parent, features indx. 1, threshold 2.51
 				leaf, label 1
-				parent, features indx. 59, threshold 0.00
-					leaf, label 1
-					parent, features indx. 56, threshold 0.00
-						leaf, label 1
-						parent, features indx. 23, threshold 0.32
-							leaf, label 1
-							parent, features indx. 57, threshold 0.00
-								leaf, label 1
-								parent, features indx. 57, threshold 0.00
-									leaf, label 1
-									leaf, label 1
+				parent, features indx. 0, threshold 5.10
+					leaf, label 0
+					parent, features indx. 0, threshold 6.58
+						parent, features indx. 1, threshold 3.19
+							leaf, label 2
+							leaf, label 2
+						leaf, label 2
+			leaf, label 2
+		leaf, label 0
 decision tree 11
-parent, features indx. 8, threshold 0.13
-	parent, features indx. 10, threshold 0.22
-		parent, features indx. 26, threshold 0.50
-			leaf, label 0
-			leaf, label 0
-		leaf, label 1
-	parent, features indx. 50, threshold 0.01
-		parent, features indx. 30, threshold 0.39
+parent, features indx. 3, threshold 2.30
+	parent, features indx. 3, threshold 1.28
+		parent, features indx. 1, threshold 3.08
 			leaf, label 1
 			leaf, label 0
-		parent, features indx. 16, threshold 0.63
-			parent, features indx. 2, threshold 0.01
+		parent, features indx. 3, threshold 2.16
+			parent, features indx. 3, threshold 1.55
 				leaf, label 1
-				parent, features indx. 41, threshold 0.09
-					leaf, label 1
-					parent, features indx. 10, threshold 0.22
-						leaf, label 1
-						parent, features indx. 33, threshold 0.10
-							leaf, label 1
-							parent, features indx. 55, threshold 0.00
-								leaf, label 1
-								parent, features indx. 5, threshold 0.03
-									leaf, label 1
-									leaf, label 1
-			leaf, label 1
+				parent, features indx. 2, threshold 5.74
+					leaf, label 2
+					leaf, label 2
+			leaf, label 2
+	leaf, label 2
 decision tree 12
-parent, features indx. 46, threshold 0.08
-	parent, features indx. 14, threshold 0.48
-		parent, features indx. 33, threshold 0.51
-			leaf, label 0
-			leaf, label 0
-		leaf, label 1
-	parent, features indx. 22, threshold 0.79
-		parent, features indx. 10, threshold 0.21
-			leaf, label 0
-			parent, features indx. 38, threshold 0.13
-				leaf, label 0
-				parent, features indx. 28, threshold 0.36
+parent, features indx. 3, threshold 0.49
+	leaf, label 0
+	parent, features indx. 0, threshold 7.33
+		parent, features indx. 3, threshold 1.91
+			parent, features indx. 0, threshold 6.85
+				parent, features indx. 1, threshold 2.33
 					leaf, label 1
-					parent, features indx. 37, threshold 0.15
+					parent, features indx. 2, threshold 4.02
 						leaf, label 1
-						leaf, label 1
-		parent, features indx. 19, threshold 0.44
-			leaf, label 0
-			parent, features indx. 16, threshold 0.23
-				leaf, label 1
-				parent, features indx. 59, threshold 0.00
-					leaf, label 1
-					parent, features indx. 52, threshold 0.00
-						leaf, label 1
-						parent, features indx. 6, threshold 0.08
+						parent, features indx. 3, threshold 1.88
 							leaf, label 1
-							parent, features indx. 58, threshold 0.00
-								leaf, label 1
-								parent, features indx. 56, threshold 0.00
-									leaf, label 1
-									leaf, label 1
+							leaf, label 2
+				leaf, label 1
+			leaf, label 2
+		leaf, label 2
 decision tree 13
-parent, features indx. 6, threshold 0.12
-	parent, features indx. 11, threshold 0.17
-		parent, features indx. 3, threshold 0.05
-			leaf, label 0
-			leaf, label 0
-		parent, features indx. 47, threshold 0.11
-			parent, features indx. 24, threshold 0.85
-				leaf, label 0
-				leaf, label 1
-			leaf, label 1
-	parent, features indx. 57, threshold 0.00
-		leaf, label 0
-		parent, features indx. 34, threshold 0.29
-			parent, features indx. 57, threshold 0.00
-				leaf, label 1
-				leaf, label 1
-			leaf, label 1
+parent, features indx. 3, threshold 0.81
+	leaf, label 0
+	parent, features indx. 1, threshold 2.22
+		leaf, label 1
+		parent, features indx. 0, threshold 6.96
+			parent, features indx. 3, threshold 2.27
+				parent, features indx. 0, threshold 6.43
+					parent, features indx. 2, threshold 4.52
+						leaf, label 1
+						leaf, label 2
+					leaf, label 2
+				leaf, label 2
+			leaf, label 2
 decision tree 14
-parent, features indx. 58, threshold 0.01
-	parent, features indx. 47, threshold 0.09
-		parent, features indx. 26, threshold 0.95
-			parent, features indx. 54, threshold 0.01
+parent, features indx. 0, threshold 5.49
+	parent, features indx. 3, threshold 1.12
+		parent, features indx. 1, threshold 2.54
+			leaf, label 1
+			leaf, label 0
+		leaf, label 2
+	parent, features indx. 0, threshold 7.59
+		parent, features indx. 1, threshold 2.54
+			leaf, label 1
+			parent, features indx. 1, threshold 3.71
+				parent, features indx. 3, threshold 1.58
+					leaf, label 1
+					parent, features indx. 3, threshold 2.06
+						leaf, label 2
+						leaf, label 2
 				leaf, label 0
-				parent, features indx. 11, threshold 0.37
-					leaf, label 0
-					leaf, label 0
-			leaf, label 1
-		leaf, label 1
-	parent, features indx. 21, threshold 0.66
-		parent, features indx. 0, threshold 0.03
-			leaf, label 0
-			leaf, label 1
-		parent, features indx. 4, threshold 0.04
-			leaf, label 0
-			parent, features indx. 40, threshold 0.11
-				leaf, label 1
-				parent, features indx. 26, threshold 0.33
-					leaf, label 1
-					leaf, label 1
+		leaf, label 2
 decision tree 15
-parent, features indx. 48, threshold 0.05
-	parent, features indx. 20, threshold 0.68
-		parent, features indx. 54, threshold 0.01
-			leaf, label 0
-			leaf, label 0
-		parent, features indx. 48, threshold 0.04
-			parent, features indx. 3, threshold 0.05
-				leaf, label 0
-				leaf, label 1
-			leaf, label 0
-	parent, features indx. 38, threshold 0.16
+parent, features indx. 3, threshold 1.07
+	parent, features indx. 3, threshold 0.33
 		leaf, label 0
-		parent, features indx. 8, threshold 0.12
-			leaf, label 0
-			parent, features indx. 35, threshold 0.09
+		leaf, label 0
+	parent, features indx. 2, threshold 6.18
+		parent, features indx. 2, threshold 5.58
+			parent, features indx. 0, threshold 5.88
 				leaf, label 1
-				parent, features indx. 21, threshold 0.18
-					leaf, label 1
-					parent, features indx. 24, threshold 0.23
-						leaf, label 1
-						parent, features indx. 25, threshold 0.40
-							leaf, label 1
-							parent, features indx. 16, threshold 0.18
-								leaf, label 1
-								parent, features indx. 44, threshold 0.11
-									leaf, label 1
-									leaf, label 1
+				leaf, label 2
+			leaf, label 2
+		leaf, label 2
 decision tree 16
-parent, features indx. 8, threshold 0.12
-	parent, features indx. 20, threshold 0.56
-		parent, features indx. 28, threshold 0.87
-			leaf, label 0
-			leaf, label 0
+parent, features indx. 1, threshold 2.20
+	leaf, label 1
+	parent, features indx. 2, threshold 2.44
 		leaf, label 0
-	parent, features indx. 47, threshold 0.04
-		leaf, label 0
-		parent, features indx. 15, threshold 0.67
-			parent, features indx. 57, threshold 0.00
-				leaf, label 0
-				parent, features indx. 13, threshold 0.18
-					leaf, label 1
-					parent, features indx. 25, threshold 0.29
-						leaf, label 1
-						parent, features indx. 15, threshold 0.14
-							leaf, label 1
-							parent, features indx. 32, threshold 0.23
-								leaf, label 1
-								parent, features indx. 4, threshold 0.02
-									leaf, label 1
-									leaf, label 1
-			leaf, label 1
+		parent, features indx. 3, threshold 1.66
+			parent, features indx. 1, threshold 2.76
+				leaf, label 1
+				leaf, label 1
+			parent, features indx. 3, threshold 2.31
+				parent, features indx. 2, threshold 5.33
+					leaf, label 2
+					leaf, label 2
+				leaf, label 2
 decision tree 17
-parent, features indx. 12, threshold 0.16
-	parent, features indx. 15, threshold 0.30
-		parent, features indx. 45, threshold 0.33
-			leaf, label 0
-			leaf, label 0
+parent, features indx. 0, threshold 5.30
+	parent, features indx. 1, threshold 2.38
 		leaf, label 1
-	parent, features indx. 4, threshold 0.01
-		leaf, label 0
-		parent, features indx. 31, threshold 0.55
-			parent, features indx. 57, threshold 0.01
-				parent, features indx. 54, threshold 0.01
-					leaf, label 1
-					leaf, label 0
-				parent, features indx. 33, threshold 0.10
-					leaf, label 0
-					parent, features indx. 3, threshold 0.02
-						leaf, label 1
-						parent, features indx. 56, threshold 0.00
-							leaf, label 1
-							parent, features indx. 33, threshold 0.10
-								leaf, label 1
-								parent, features indx. 42, threshold 0.13
-									leaf, label 1
-									leaf, label 1
+		parent, features indx. 0, threshold 5.10
 			leaf, label 0
+			leaf, label 0
+	parent, features indx. 2, threshold 3.42
+		leaf, label 0
+		parent, features indx. 0, threshold 5.85
+			leaf, label 1
+			parent, features indx. 2, threshold 5.32
+				leaf, label 1
+				leaf, label 2
 decision tree 18
-parent, features indx. 10, threshold 0.18
-	parent, features indx. 27, threshold 0.37
-		leaf, label 1
-		parent, features indx. 48, threshold 0.06
-			parent, features indx. 4, threshold 0.07
-				leaf, label 0
-				leaf, label 0
-			leaf, label 1
-	parent, features indx. 37, threshold 0.58
-		parent, features indx. 32, threshold 0.20
+parent, features indx. 3, threshold 2.33
+	parent, features indx. 0, threshold 5.31
+		parent, features indx. 3, threshold 0.75
 			leaf, label 0
-			parent, features indx. 39, threshold 0.44
-				parent, features indx. 6, threshold 0.07
-					leaf, label 1
-					parent, features indx. 52, threshold 0.00
-						leaf, label 1
-						parent, features indx. 37, threshold 0.13
+			leaf, label 2
+		parent, features indx. 1, threshold 4.37
+			parent, features indx. 3, threshold 1.92
+				parent, features indx. 2, threshold 2.07
+					leaf, label 0
+					parent, features indx. 0, threshold 7.18
+						parent, features indx. 2, threshold 3.56
 							leaf, label 1
-							parent, features indx. 5, threshold 0.06
+							parent, features indx. 0, threshold 6.40
+								parent, features indx. 2, threshold 4.35
+									leaf, label 1
+									leaf, label 1
 								leaf, label 1
-								parent, features indx. 59, threshold 0.00
-									leaf, label 1
-									leaf, label 1
-				leaf, label 0
-		leaf, label 0
+						leaf, label 2
+				leaf, label 2
+			leaf, label 0
+	leaf, label 2
 decision tree 19
-parent, features indx. 11, threshold 0.20
-	parent, features indx. 3, threshold 0.05
-		parent, features indx. 12, threshold 0.09
+parent, features indx. 2, threshold 4.77
+	parent, features indx. 0, threshold 5.17
+		parent, features indx. 2, threshold 1.84
 			leaf, label 0
-			parent, features indx. 2, threshold 0.01
-				leaf, label 0
-				leaf, label 0
-		leaf, label 0
-	parent, features indx. 58, threshold 0.01
-		parent, features indx. 41, threshold 0.28
-			leaf, label 0
-			parent, features indx. 10, threshold 0.11
-				leaf, label 0
-				parent, features indx. 59, threshold 0.00
-					leaf, label 1
-					parent, features indx. 7, threshold 0.09
-						leaf, label 1
-						parent, features indx. 13, threshold 0.17
-							leaf, label 1
-							leaf, label 1
-		parent, features indx. 48, threshold 0.02
 			leaf, label 1
-			parent, features indx. 9, threshold 0.04
+		parent, features indx. 0, threshold 6.56
+			parent, features indx. 2, threshold 3.45
+				leaf, label 0
 				leaf, label 1
-				parent, features indx. 30, threshold 0.27
-					leaf, label 1
-					leaf, label 1
+			leaf, label 1
+	parent, features indx. 1, threshold 3.14
+		leaf, label 2
+		leaf, label 2
 decision tree 20
-parent, features indx. 12, threshold 0.15
-	parent, features indx. 29, threshold 0.37
-		leaf, label 0
-		leaf, label 0
-	parent, features indx. 1, threshold 0.01
-		leaf, label 0
-		parent, features indx. 12, threshold 0.38
-			parent, features indx. 54, threshold 0.01
-				parent, features indx. 39, threshold 0.08
-					leaf, label 1
-					parent, features indx. 53, threshold 0.00
-						leaf, label 1
-						parent, features indx. 38, threshold 0.10
-							leaf, label 1
-							parent, features indx. 8, threshold 0.06
-								leaf, label 1
-								parent, features indx. 16, threshold 0.22
-									leaf, label 1
-									leaf, label 1
-				parent, features indx. 22, threshold 0.83
-					leaf, label 0
-					leaf, label 1
-			parent, features indx. 28, threshold 0.73
-				leaf, label 1
+parent, features indx. 1, threshold 2.28
+	leaf, label 1
+	parent, features indx. 2, threshold 3.50
+		parent, features indx. 2, threshold 3.10
+			parent, features indx. 2, threshold 2.12
 				leaf, label 0
+				leaf, label 1
+			leaf, label 1
+		parent, features indx. 1, threshold 3.06
+			parent, features indx. 2, threshold 5.34
+				parent, features indx. 3, threshold 1.75
+					leaf, label 1
+					leaf, label 2
+				leaf, label 2
+			leaf, label 2
 decision tree 21
-parent, features indx. 46, threshold 0.10
-	parent, features indx. 51, threshold 0.01
-		parent, features indx. 28, threshold 0.33
+parent, features indx. 1, threshold 3.45
+	parent, features indx. 1, threshold 2.18
+		leaf, label 1
+		parent, features indx. 0, threshold 4.37
 			leaf, label 0
-			leaf, label 0
-		parent, features indx. 10, threshold 0.17
-			leaf, label 0
-			parent, features indx. 22, threshold 0.91
-				leaf, label 1
-				leaf, label 1
-	parent, features indx. 45, threshold 0.08
-		leaf, label 0
-		parent, features indx. 10, threshold 0.12
-			leaf, label 0
-			parent, features indx. 27, threshold 0.64
-				leaf, label 1
-				parent, features indx. 3, threshold 0.01
-					leaf, label 1
-					parent, features indx. 8, threshold 0.11
+			parent, features indx. 2, threshold 2.43
+				leaf, label 0
+				parent, features indx. 3, threshold 2.00
+					parent, features indx. 3, threshold 1.41
 						leaf, label 1
-						parent, features indx. 54, threshold 0.00
-							leaf, label 1
-							parent, features indx. 12, threshold 0.16
-								leaf, label 1
-								parent, features indx. 36, threshold 0.07
-									leaf, label 1
-									leaf, label 1
+						leaf, label 2
+					leaf, label 2
+	leaf, label 0
 decision tree 22
-parent, features indx. 3, threshold 0.04
-	parent, features indx. 10, threshold 0.17
+parent, features indx. 0, threshold 4.34
+	leaf, label 0
+	parent, features indx. 2, threshold 2.73
 		leaf, label 0
-		parent, features indx. 50, threshold 0.01
-			leaf, label 0
-			leaf, label 1
-	parent, features indx. 28, threshold 0.56
-		parent, features indx. 57, threshold 0.00
-			leaf, label 0
-			parent, features indx. 15, threshold 0.70
+		parent, features indx. 2, threshold 5.27
+			parent, features indx. 2, threshold 3.04
 				leaf, label 1
-				leaf, label 0
-		parent, features indx. 49, threshold 0.01
-			leaf, label 0
-			parent, features indx. 59, threshold 0.00
-				leaf, label 0
-				leaf, label 1
+				parent, features indx. 0, threshold 5.28
+					leaf, label 1
+					parent, features indx. 2, threshold 3.79
+						leaf, label 1
+						parent, features indx. 0, threshold 6.36
+							parent, features indx. 3, threshold 1.78
+								parent, features indx. 1, threshold 2.85
+									leaf, label 1
+									leaf, label 1
+								leaf, label 2
+							leaf, label 1
+			leaf, label 2
 decision tree 23
-parent, features indx. 51, threshold 0.01
-	parent, features indx. 41, threshold 0.33
-		parent, features indx. 24, threshold 0.91
-			leaf, label 0
+parent, features indx. 2, threshold 4.96
+	parent, features indx. 2, threshold 3.66
+		parent, features indx. 3, threshold 1.22
+			parent, features indx. 2, threshold 1.94
+				leaf, label 0
+				leaf, label 1
 			leaf, label 1
-		leaf, label 1
-	parent, features indx. 38, threshold 0.13
-		leaf, label 0
-		parent, features indx. 36, threshold 0.25
-			parent, features indx. 7, threshold 0.07
-				leaf, label 0
-				parent, features indx. 39, threshold 0.08
+		parent, features indx. 0, threshold 5.23
+			leaf, label 2
+			parent, features indx. 0, threshold 6.11
+				parent, features indx. 0, threshold 6.04
 					leaf, label 1
-					parent, features indx. 43, threshold 0.07
-						leaf, label 1
-						parent, features indx. 30, threshold 0.28
-							leaf, label 1
-							parent, features indx. 6, threshold 0.08
-								leaf, label 1
-								leaf, label 1
-			parent, features indx. 33, threshold 0.87
-				parent, features indx. 46, threshold 0.07
-					leaf, label 0
-					parent, features indx. 12, threshold 0.06
-						leaf, label 0
-						parent, features indx. 5, threshold 0.04
-							leaf, label 1
-							leaf, label 1
-				leaf, label 0
+					leaf, label 1
+				leaf, label 1
+	leaf, label 2
 decision tree 24
-parent, features indx. 44, threshold 0.27
-	parent, features indx. 20, threshold 0.64
-		parent, features indx. 34, threshold 0.18
-			leaf, label 1
-			parent, features indx. 44, threshold 0.19
-				parent, features indx. 45, threshold 0.18
-					leaf, label 0
-					leaf, label 0
-				leaf, label 0
-		parent, features indx. 22, threshold 0.52
-			leaf, label 0
-			parent, features indx. 58, threshold 0.01
-				parent, features indx. 19, threshold 0.75
-					leaf, label 1
-					leaf, label 0
-				leaf, label 1
-	parent, features indx. 50, threshold 0.00
+parent, features indx. 1, threshold 2.88
+	parent, features indx. 1, threshold 2.65
 		leaf, label 1
-		parent, features indx. 32, threshold 0.42
-			leaf, label 1
-			parent, features indx. 40, threshold 0.26
+		leaf, label 2
+	parent, features indx. 0, threshold 4.52
+		leaf, label 0
+		parent, features indx. 3, threshold 1.63
+			parent, features indx. 3, threshold 1.02
+				leaf, label 0
 				leaf, label 1
-				parent, features indx. 3, threshold 0.02
-					leaf, label 1
-					parent, features indx. 48, threshold 0.03
-						leaf, label 1
-						leaf, label 1
+			parent, features indx. 2, threshold 5.47
+				leaf, label 2
+				leaf, label 2
 decision tree 25
-parent, features indx. 47, threshold 0.09
-	parent, features indx. 5, threshold 0.10
-		parent, features indx. 59, threshold 0.00
-			leaf, label 1
-			parent, features indx. 23, threshold 0.91
-				parent, features indx. 5, threshold 0.08
-					leaf, label 0
-					leaf, label 0
-				leaf, label 1
-		parent, features indx. 31, threshold 0.48
-			leaf, label 1
-			leaf, label 0
-	parent, features indx. 4, threshold 0.04
+parent, features indx. 1, threshold 3.89
+	parent, features indx. 0, threshold 4.85
 		leaf, label 0
-		parent, features indx. 15, threshold 0.64
-			parent, features indx. 37, threshold 0.09
-				leaf, label 1
-				parent, features indx. 3, threshold 0.02
+		parent, features indx. 1, threshold 2.05
+			leaf, label 1
+			parent, features indx. 1, threshold 3.15
+				parent, features indx. 1, threshold 2.45
 					leaf, label 1
-					parent, features indx. 59, threshold 0.00
-						leaf, label 1
-						parent, features indx. 27, threshold 0.53
+					parent, features indx. 1, threshold 3.09
+						parent, features indx. 2, threshold 5.15
 							leaf, label 1
-							parent, features indx. 50, threshold 0.01
-								leaf, label 1
-								parent, features indx. 56, threshold 0.00
-									leaf, label 1
-									leaf, label 1
-			leaf, label 0
-decision tree 26
-parent, features indx. 48, threshold 0.05
-	parent, features indx. 12, threshold 0.23
-		parent, features indx. 1, threshold 0.04
-			parent, features indx. 42, threshold 0.06
-				leaf, label 0
-				leaf, label 0
-			leaf, label 1
-		parent, features indx. 23, threshold 0.53
-			leaf, label 0
-			parent, features indx. 35, threshold 0.52
-				parent, features indx. 1, threshold 0.01
-					leaf, label 1
-					parent, features indx. 16, threshold 0.22
-						leaf, label 1
-						leaf, label 1
-				leaf, label 0
-	parent, features indx. 18, threshold 0.66
-		parent, features indx. 10, threshold 0.12
-			leaf, label 0
-			parent, features indx. 51, threshold 0.01
-				leaf, label 1
-				parent, features indx. 51, threshold 0.01
-					leaf, label 1
-					parent, features indx. 53, threshold 0.00
-						leaf, label 1
-						parent, features indx. 53, threshold 0.01
-							leaf, label 1
-							parent, features indx. 34, threshold 0.03
-								leaf, label 1
-								parent, features indx. 16, threshold 0.12
-									leaf, label 1
-									leaf, label 1
-		leaf, label 0
-decision tree 27
-parent, features indx. 48, threshold 0.05
-	parent, features indx. 4, threshold 0.12
-		parent, features indx. 10, threshold 0.16
-			leaf, label 0
-			parent, features indx. 22, threshold 0.72
-				leaf, label 0
-				leaf, label 1
-		leaf, label 1
-	parent, features indx. 29, threshold 0.53
-		leaf, label 1
-		parent, features indx. 40, threshold 0.50
-			parent, features indx. 48, threshold 0.05
-				leaf, label 1
-				parent, features indx. 29, threshold 0.54
-					leaf, label 1
-					parent, features indx. 18, threshold 0.32
-						leaf, label 1
-						parent, features indx. 50, threshold 0.01
-							leaf, label 1
-							leaf, label 1
-			leaf, label 1
-decision tree 28
-parent, features indx. 20, threshold 0.65
-	parent, features indx. 48, threshold 0.05
-		parent, features indx. 8, threshold 0.16
-			parent, features indx. 7, threshold 0.12
-				parent, features indx. 55, threshold 0.00
-					leaf, label 0
-					leaf, label 0
-				leaf, label 0
-			leaf, label 0
-		parent, features indx. 39, threshold 0.67
-			leaf, label 1
-			leaf, label 0
-	parent, features indx. 19, threshold 0.81
-		parent, features indx. 14, threshold 0.11
-			leaf, label 1
-			parent, features indx. 27, threshold 0.19
-				leaf, label 1
-				parent, features indx. 54, threshold 0.00
-					leaf, label 1
-					parent, features indx. 18, threshold 0.27
-						leaf, label 1
-						leaf, label 1
-		parent, features indx. 6, threshold 0.07
-			leaf, label 0
-			parent, features indx. 29, threshold 0.16
-				leaf, label 0
-				leaf, label 1
-decision tree 29
-parent, features indx. 11, threshold 0.19
-	parent, features indx. 8, threshold 0.16
-		parent, features indx. 38, threshold 0.58
-			leaf, label 0
-			leaf, label 1
-		leaf, label 1
-	parent, features indx. 46, threshold 0.06
-		leaf, label 0
-		parent, features indx. 8, threshold 0.10
-			leaf, label 0
-			parent, features indx. 48, threshold 0.03
-				leaf, label 1
-				parent, features indx. 6, threshold 0.10
-					leaf, label 1
-					parent, features indx. 14, threshold 0.07
-						leaf, label 1
-						parent, features indx. 52, threshold 0.00
-							leaf, label 1
-							parent, features indx. 21, threshold 0.20
-								leaf, label 1
-								parent, features indx. 6, threshold 0.10
-									leaf, label 1
-									leaf, label 1
-decision tree 30
-parent, features indx. 42, threshold 0.19
-	parent, features indx. 6, threshold 0.15
-		parent, features indx. 1, threshold 0.02
-			leaf, label 0
-			leaf, label 0
-		leaf, label 1
-	parent, features indx. 9, threshold 0.12
-		parent, features indx. 29, threshold 0.63
-			leaf, label 1
-			leaf, label 0
-		parent, features indx. 7, threshold 0.08
-			leaf, label 0
-			parent, features indx. 29, threshold 0.52
-				leaf, label 1
-				parent, features indx. 49, threshold 0.05
-					parent, features indx. 56, threshold 0.00
-						leaf, label 1
-						parent, features indx. 46, threshold 0.32
-							leaf, label 1
-							leaf, label 1
-					leaf, label 1
-decision tree 31
-parent, features indx. 1, threshold 0.03
-	parent, features indx. 10, threshold 0.23
-		parent, features indx. 33, threshold 0.20
-			leaf, label 1
-			parent, features indx. 0, threshold 0.03
-				parent, features indx. 50, threshold 0.02
-					leaf, label 0
-					leaf, label 0
-				leaf, label 0
-		leaf, label 1
-	parent, features indx. 29, threshold 0.24
-		leaf, label 0
-		parent, features indx. 43, threshold 0.13
-			leaf, label 0
-			parent, features indx. 42, threshold 0.10
-				leaf, label 0
-				parent, features indx. 33, threshold 0.13
-					leaf, label 1
-					parent, features indx. 6, threshold 0.06
-						leaf, label 1
-						parent, features indx. 56, threshold 0.00
-							leaf, label 1
-							parent, features indx. 31, threshold 0.12
-								leaf, label 1
-								parent, features indx. 4, threshold 0.02
-									leaf, label 1
-									leaf, label 1
-decision tree 32
-parent, features indx. 20, threshold 0.71
-	parent, features indx. 48, threshold 0.06
-		parent, features indx. 41, threshold 0.27
-			parent, features indx. 6, threshold 0.14
-				leaf, label 0
-				leaf, label 0
-			leaf, label 0
-		leaf, label 1
-	parent, features indx. 26, threshold 0.41
-		leaf, label 1
-		parent, features indx. 22, threshold 0.80
-			leaf, label 0
-			leaf, label 1
-decision tree 33
-parent, features indx. 8, threshold 0.11
-	parent, features indx. 13, threshold 0.37
-		parent, features indx. 7, threshold 0.05
-			leaf, label 1
-			leaf, label 0
-		leaf, label 1
-	parent, features indx. 46, threshold 0.06
-		leaf, label 0
-		parent, features indx. 17, threshold 0.93
-			parent, features indx. 23, threshold 0.98
-				parent, features indx. 36, threshold 0.09
-					leaf, label 0
-					parent, features indx. 5, threshold 0.03
+							leaf, label 2
 						leaf, label 0
-						parent, features indx. 47, threshold 0.03
-							leaf, label 1
-							parent, features indx. 58, threshold 0.00
-								leaf, label 1
-								parent, features indx. 7, threshold 0.07
-									leaf, label 1
-									leaf, label 1
-				leaf, label 1
+				parent, features indx. 2, threshold 4.42
+					leaf, label 0
+					leaf, label 2
+	leaf, label 0
+decision tree 26
+parent, features indx. 2, threshold 5.82
+	parent, features indx. 3, threshold 1.05
+		parent, features indx. 2, threshold 2.97
 			leaf, label 0
+			leaf, label 1
+		parent, features indx. 2, threshold 4.81
+			parent, features indx. 2, threshold 3.65
+				leaf, label 1
+				leaf, label 1
+			leaf, label 2
+	leaf, label 2
+decision tree 27
+parent, features indx. 0, threshold 4.92
+	leaf, label 0
+	parent, features indx. 0, threshold 5.27
+		leaf, label 0
+		parent, features indx. 1, threshold 3.41
+			parent, features indx. 2, threshold 2.92
+				leaf, label 0
+				parent, features indx. 0, threshold 6.73
+					parent, features indx. 1, threshold 2.34
+						leaf, label 1
+						parent, features indx. 2, threshold 5.15
+							parent, features indx. 3, threshold 1.55
+								leaf, label 1
+								leaf, label 2
+							leaf, label 2
+					leaf, label 2
+			leaf, label 0
+decision tree 28
+parent, features indx. 0, threshold 5.57
+	parent, features indx. 1, threshold 3.21
+		parent, features indx. 2, threshold 2.89
+			leaf, label 0
+			leaf, label 1
+		leaf, label 0
+	parent, features indx. 3, threshold 0.40
+		leaf, label 0
+		parent, features indx. 1, threshold 3.25
+			parent, features indx. 0, threshold 6.85
+				parent, features indx. 3, threshold 1.64
+					leaf, label 1
+					leaf, label 2
+				leaf, label 2
+			leaf, label 2
+decision tree 29
+parent, features indx. 3, threshold 0.35
+	leaf, label 0
+	parent, features indx. 3, threshold 2.38
+		parent, features indx. 2, threshold 4.25
+			leaf, label 1
+			parent, features indx. 3, threshold 1.76
+				leaf, label 1
+				leaf, label 2
+		leaf, label 2
+decision tree 30
+parent, features indx. 3, threshold 0.19
+	leaf, label 0
+	parent, features indx. 2, threshold 3.20
+		parent, features indx. 3, threshold 0.61
+			leaf, label 0
+			leaf, label 1
+		parent, features indx. 1, threshold 3.77
+			parent, features indx. 2, threshold 5.46
+				parent, features indx. 0, threshold 5.84
+					parent, features indx. 0, threshold 5.05
+						leaf, label 2
+						leaf, label 1
+					leaf, label 1
+				leaf, label 2
+			leaf, label 2
+decision tree 31
+parent, features indx. 3, threshold 0.11
+	leaf, label 0
+	parent, features indx. 1, threshold 4.11
+		parent, features indx. 1, threshold 2.27
+			leaf, label 2
+			parent, features indx. 1, threshold 2.63
+				leaf, label 1
+				parent, features indx. 3, threshold 0.81
+					leaf, label 0
+					parent, features indx. 0, threshold 6.95
+						parent, features indx. 2, threshold 5.54
+							parent, features indx. 3, threshold 1.83
+								leaf, label 1
+								leaf, label 2
+							leaf, label 2
+						leaf, label 2
+		leaf, label 0
+decision tree 32
+parent, features indx. 3, threshold 1.39
+	parent, features indx. 2, threshold 1.31
+		leaf, label 0
+		parent, features indx. 0, threshold 5.15
+			parent, features indx. 2, threshold 2.41
+				leaf, label 0
+				leaf, label 1
+			parent, features indx. 2, threshold 1.49
+				leaf, label 0
+				leaf, label 1
+	parent, features indx. 3, threshold 1.51
+		leaf, label 1
+		parent, features indx. 3, threshold 1.91
+			leaf, label 2
+			leaf, label 2
+decision tree 33
+parent, features indx. 0, threshold 4.57
+	leaf, label 0
+	parent, features indx. 3, threshold 0.79
+		leaf, label 0
+		parent, features indx. 1, threshold 3.51
+			parent, features indx. 3, threshold 1.47
+				leaf, label 1
+				parent, features indx. 2, threshold 4.54
+					leaf, label 1
+					parent, features indx. 0, threshold 6.71
+						parent, features indx. 3, threshold 1.84
+							leaf, label 2
+							leaf, label 2
+						leaf, label 2
+			leaf, label 2
 decision tree 34
-parent, features indx. 46, threshold 0.16
-	parent, features indx. 11, threshold 0.19
-		parent, features indx. 5, threshold 0.10
-			parent, features indx. 44, threshold 0.06
+parent, features indx. 1, threshold 2.25
+	leaf, label 1
+	parent, features indx. 1, threshold 3.02
+		parent, features indx. 2, threshold 2.69
+			leaf, label 0
+			parent, features indx. 1, threshold 2.78
+				leaf, label 1
+				parent, features indx. 1, threshold 2.81
+					leaf, label 2
+					leaf, label 2
+		parent, features indx. 3, threshold 2.41
+			parent, features indx. 0, threshold 5.48
 				leaf, label 0
 				leaf, label 0
-			leaf, label 1
-		parent, features indx. 59, threshold 0.01
-			parent, features indx. 1, threshold 0.03
-				leaf, label 1
-				leaf, label 0
-			leaf, label 1
-	parent, features indx. 14, threshold 0.66
-		parent, features indx. 38, threshold 0.12
-			leaf, label 1
-			parent, features indx. 37, threshold 0.17
-				leaf, label 1
-				leaf, label 1
-		leaf, label 0
+			leaf, label 2
 decision tree 35
-parent, features indx. 0, threshold 0.02
-	parent, features indx. 10, threshold 0.20
-		parent, features indx. 19, threshold 0.52
-			leaf, label 0
-			leaf, label 0
-		parent, features indx. 59, threshold 0.00
-			parent, features indx. 10, threshold 0.22
-				leaf, label 1
-				leaf, label 1
-			leaf, label 0
-	parent, features indx. 13, threshold 0.16
+parent, features indx. 2, threshold 3.75
+	parent, features indx. 2, threshold 2.92
 		leaf, label 0
-		parent, features indx. 52, threshold 0.01
-			leaf, label 1
-			parent, features indx. 55, threshold 0.00
+		leaf, label 1
+	parent, features indx. 2, threshold 5.96
+		parent, features indx. 3, threshold 1.79
+			parent, features indx. 1, threshold 3.04
+				parent, features indx. 1, threshold 2.77
+					leaf, label 1
+					leaf, label 1
 				leaf, label 1
-				leaf, label 1
+			parent, features indx. 3, threshold 2.33
+				leaf, label 2
+				leaf, label 2
+		leaf, label 2
 decision tree 36
-parent, features indx. 12, threshold 0.21
-	parent, features indx. 5, threshold 0.10
-		parent, features indx. 47, threshold 0.09
-			leaf, label 0
-			leaf, label 0
+parent, features indx. 0, threshold 5.41
+	parent, features indx. 3, threshold 0.28
+		leaf, label 0
+		leaf, label 0
+	parent, features indx. 3, threshold 1.47
 		leaf, label 1
-	parent, features indx. 22, threshold 0.83
-		parent, features indx. 48, threshold 0.05
-			parent, features indx. 7, threshold 0.12
-				leaf, label 0
-				leaf, label 1
+		parent, features indx. 2, threshold 4.98
 			leaf, label 1
-		parent, features indx. 55, threshold 0.00
-			leaf, label 1
-			parent, features indx. 40, threshold 0.17
-				leaf, label 1
-				parent, features indx. 47, threshold 0.02
-					leaf, label 1
-					parent, features indx. 20, threshold 0.53
-						leaf, label 1
-						parent, features indx. 35, threshold 0.10
-							leaf, label 1
-							leaf, label 1
+			leaf, label 2
 decision tree 37
-parent, features indx. 7, threshold 0.11
-	parent, features indx. 0, threshold 0.03
-		parent, features indx. 48, threshold 0.02
-			leaf, label 0
-			parent, features indx. 31, threshold 0.33
-				leaf, label 1
-				parent, features indx. 46, threshold 0.17
-					leaf, label 0
-					leaf, label 1
+parent, features indx. 1, threshold 3.07
+	parent, features indx. 1, threshold 2.74
 		leaf, label 1
-	parent, features indx. 30, threshold 0.27
-		leaf, label 0
-		parent, features indx. 9, threshold 0.13
+		parent, features indx. 0, threshold 4.62
 			leaf, label 0
-			parent, features indx. 15, threshold 0.85
-				parent, features indx. 38, threshold 0.14
-					leaf, label 1
-					parent, features indx. 30, threshold 0.31
-						leaf, label 1
-						parent, features indx. 45, threshold 0.06
-							leaf, label 1
-							parent, features indx. 17, threshold 0.15
-								leaf, label 1
-								parent, features indx. 8, threshold 0.17
-									leaf, label 1
-									leaf, label 1
+			parent, features indx. 3, threshold 0.90
 				leaf, label 0
+				parent, features indx. 3, threshold 1.27
+					leaf, label 1
+					parent, features indx. 0, threshold 6.82
+						leaf, label 2
+						leaf, label 2
+	parent, features indx. 0, threshold 6.22
+		parent, features indx. 3, threshold 0.97
+			leaf, label 0
+			leaf, label 1
+		leaf, label 2
 decision tree 38
-parent, features indx. 51, threshold 0.01
-	parent, features indx. 47, threshold 0.10
-		parent, features indx. 45, threshold 0.18
+parent, features indx. 0, threshold 5.58
+	parent, features indx. 0, threshold 4.65
+		leaf, label 0
+		parent, features indx. 0, threshold 5.00
 			leaf, label 0
 			leaf, label 1
+	parent, features indx. 1, threshold 2.41
 		leaf, label 1
-	parent, features indx. 11, threshold 0.20
-		parent, features indx. 8, threshold 0.18
-			leaf, label 0
-			leaf, label 1
-		parent, features indx. 12, threshold 0.16
-			leaf, label 0
-			parent, features indx. 9, threshold 0.08
-				leaf, label 0
-				parent, features indx. 16, threshold 0.72
-					parent, features indx. 16, threshold 0.17
-						leaf, label 1
-						parent, features indx. 41, threshold 0.11
-							leaf, label 1
-							parent, features indx. 14, threshold 0.13
-								leaf, label 1
-								parent, features indx. 55, threshold 0.00
-									leaf, label 1
-									leaf, label 1
+		parent, features indx. 1, threshold 2.75
+			leaf, label 2
+			parent, features indx. 0, threshold 6.96
+				parent, features indx. 0, threshold 6.29
 					leaf, label 1
+					leaf, label 2
+				leaf, label 2
 decision tree 39
-parent, features indx. 52, threshold 0.02
-	parent, features indx. 51, threshold 0.01
-		parent, features indx. 44, threshold 0.32
-			parent, features indx. 6, threshold 0.11
-				leaf, label 0
-				leaf, label 0
-			leaf, label 1
-		parent, features indx. 47, threshold 0.08
-			parent, features indx. 10, threshold 0.15
-				leaf, label 0
-				leaf, label 1
-			parent, features indx. 27, threshold 0.54
-				leaf, label 0
-				leaf, label 1
-	parent, features indx. 14, threshold 0.20
-		leaf, label 0
+parent, features indx. 3, threshold 0.28
+	leaf, label 0
+	parent, features indx. 1, threshold 2.55
 		leaf, label 1
+		parent, features indx. 3, threshold 1.05
+			leaf, label 0
+			parent, features indx. 1, threshold 3.74
+				parent, features indx. 3, threshold 1.80
+					leaf, label 1
+					leaf, label 2
+				leaf, label 2
 decision tree 40
-parent, features indx. 11, threshold 0.21
-	parent, features indx. 59, threshold 0.00
-		leaf, label 1
-		parent, features indx. 43, threshold 0.21
-			leaf, label 0
-			leaf, label 0
-	parent, features indx. 42, threshold 0.24
-		parent, features indx. 33, threshold 0.25
-			leaf, label 1
-			leaf, label 0
-		parent, features indx. 49, threshold 0.01
-			leaf, label 0
-			parent, features indx. 6, threshold 0.07
+parent, features indx. 0, threshold 4.51
+	leaf, label 0
+	parent, features indx. 1, threshold 3.17
+		parent, features indx. 3, threshold 2.36
+			parent, features indx. 1, threshold 2.11
 				leaf, label 1
-				parent, features indx. 26, threshold 0.33
-					leaf, label 1
-					parent, features indx. 58, threshold 0.00
-						leaf, label 1
-						parent, features indx. 37, threshold 0.16
-							leaf, label 1
-							parent, features indx. 22, threshold 0.26
-								leaf, label 1
-								parent, features indx. 23, threshold 0.32
+				parent, features indx. 3, threshold 0.91
+					leaf, label 0
+					parent, features indx. 0, threshold 7.49
+						parent, features indx. 2, threshold 5.50
+							parent, features indx. 2, threshold 5.23
+								parent, features indx. 3, threshold 2.11
 									leaf, label 1
-									leaf, label 1
+									leaf, label 2
+								leaf, label 2
+							leaf, label 2
+						leaf, label 2
+			leaf, label 2
+		parent, features indx. 0, threshold 5.10
+			leaf, label 0
+			leaf, label 2
 decision tree 41
-parent, features indx. 0, threshold 0.03
-	parent, features indx. 46, threshold 0.08
-		parent, features indx. 0, threshold 0.02
-			parent, features indx. 27, threshold 0.49
+parent, features indx. 0, threshold 4.77
+	leaf, label 0
+	parent, features indx. 1, threshold 4.21
+		parent, features indx. 2, threshold 3.53
+			parent, features indx. 2, threshold 1.85
 				leaf, label 0
-				leaf, label 0
-			leaf, label 0
-		parent, features indx. 11, threshold 0.17
-			leaf, label 0
-			parent, features indx. 17, threshold 0.71
 				leaf, label 1
-				leaf, label 0
-	parent, features indx. 29, threshold 0.44
-		leaf, label 1
-		parent, features indx. 27, threshold 0.81
-			leaf, label 1
-			parent, features indx. 10, threshold 0.22
-				leaf, label 1
-				leaf, label 1
+			parent, features indx. 0, threshold 5.09
+				leaf, label 2
+				parent, features indx. 3, threshold 1.92
+					parent, features indx. 2, threshold 3.76
+						leaf, label 1
+						parent, features indx. 1, threshold 2.49
+							leaf, label 1
+							parent, features indx. 3, threshold 1.54
+								leaf, label 1
+								leaf, label 2
+					leaf, label 2
+		leaf, label 0
 decision tree 42
-parent, features indx. 20, threshold 0.68
-	parent, features indx. 59, threshold 0.00
-		leaf, label 1
-		parent, features indx. 3, threshold 0.05
-			parent, features indx. 27, threshold 0.99
-				parent, features indx. 11, threshold 0.28
-					leaf, label 0
-					leaf, label 0
-				leaf, label 1
-			leaf, label 1
-	parent, features indx. 42, threshold 0.13
-		leaf, label 0
-		parent, features indx. 33, threshold 0.29
-			leaf, label 1
-			parent, features indx. 57, threshold 0.01
-				leaf, label 0
-				leaf, label 1
+parent, features indx. 3, threshold 0.67
+	leaf, label 0
+	parent, features indx. 1, threshold 2.95
+		parent, features indx. 2, threshold 5.04
+			parent, features indx. 2, threshold 4.81
+				parent, features indx. 0, threshold 6.08
+					leaf, label 1
+					leaf, label 1
+				leaf, label 2
+			leaf, label 2
+		leaf, label 2
 decision tree 43
-parent, features indx. 1, threshold 0.02
-	parent, features indx. 8, threshold 0.16
-		parent, features indx. 19, threshold 0.60
-			parent, features indx. 42, threshold 0.34
+parent, features indx. 0, threshold 4.48
+	leaf, label 0
+	parent, features indx. 1, threshold 4.16
+		parent, features indx. 1, threshold 2.79
+			parent, features indx. 3, threshold 0.60
 				leaf, label 0
+				leaf, label 1
+			parent, features indx. 2, threshold 3.28
 				leaf, label 0
-			leaf, label 1
-		leaf, label 1
-	parent, features indx. 37, threshold 0.43
-		parent, features indx. 50, threshold 0.01
-			leaf, label 0
-			parent, features indx. 15, threshold 0.68
-				parent, features indx. 20, threshold 0.38
-					leaf, label 1
-					leaf, label 1
-				leaf, label 0
-		parent, features indx. 13, threshold 0.16
-			leaf, label 0
-			leaf, label 1
+				parent, features indx. 0, threshold 7.18
+					parent, features indx. 2, threshold 5.67
+						parent, features indx. 0, threshold 6.05
+							leaf, label 1
+							leaf, label 2
+						leaf, label 2
+					leaf, label 2
+		leaf, label 0
 decision tree 44
-parent, features indx. 10, threshold 0.20
-	parent, features indx. 48, threshold 0.09
-		parent, features indx. 26, threshold 0.43
-			leaf, label 0
-			leaf, label 0
-		leaf, label 1
-	parent, features indx. 50, threshold 0.01
-		leaf, label 0
-		parent, features indx. 43, threshold 0.11
+parent, features indx. 2, threshold 1.85
+	leaf, label 0
+	parent, features indx. 0, threshold 4.93
+		leaf, label 2
+		parent, features indx. 0, threshold 5.98
 			leaf, label 1
-			parent, features indx. 2, threshold 0.02
-				leaf, label 1
-				parent, features indx. 59, threshold 0.00
-					leaf, label 1
-					parent, features indx. 17, threshold 0.15
-						leaf, label 1
-						parent, features indx. 58, threshold 0.00
-							leaf, label 1
-							parent, features indx. 7, threshold 0.10
-								leaf, label 1
-								leaf, label 1
+			parent, features indx. 3, threshold 2.02
+				parent, features indx. 3, threshold 1.94
+					leaf, label 2
+					leaf, label 2
+				leaf, label 2
 decision tree 45
-parent, features indx. 44, threshold 0.14
-	parent, features indx. 48, threshold 0.05
-		parent, features indx. 59, threshold 0.00
-			leaf, label 1
-			parent, features indx. 41, threshold 0.32
-				parent, features indx. 46, threshold 0.03
-					leaf, label 0
-					leaf, label 0
-				leaf, label 0
-		leaf, label 1
-	parent, features indx. 19, threshold 0.50
-		parent, features indx. 10, threshold 0.22
-			leaf, label 0
-			leaf, label 1
-		parent, features indx. 42, threshold 0.19
+parent, features indx. 2, threshold 4.64
+	parent, features indx. 2, threshold 1.78
+		leaf, label 0
+		parent, features indx. 0, threshold 5.87
 			leaf, label 1
 			leaf, label 1
+	parent, features indx. 1, threshold 2.95
+		leaf, label 2
+		parent, features indx. 3, threshold 1.80
+			leaf, label 2
+			parent, features indx. 0, threshold 6.04
+				leaf, label 1
+				leaf, label 2
 decision tree 46
-parent, features indx. 8, threshold 0.16
-	parent, features indx. 47, threshold 0.10
-		parent, features indx. 11, threshold 0.23
-			parent, features indx. 19, threshold 0.79
-				leaf, label 0
-				leaf, label 0
-			leaf, label 1
-		leaf, label 1
-	parent, features indx. 23, threshold 0.65
-		leaf, label 1
-		parent, features indx. 33, threshold 0.10
-			leaf, label 0
-			parent, features indx. 21, threshold 0.59
-				leaf, label 1
-				parent, features indx. 49, threshold 0.01
+parent, features indx. 3, threshold 0.86
+	leaf, label 0
+	parent, features indx. 1, threshold 2.95
+		parent, features indx. 0, threshold 7.61
+			parent, features indx. 2, threshold 5.33
+				parent, features indx. 3, threshold 1.46
 					leaf, label 1
-					parent, features indx. 19, threshold 0.43
-						leaf, label 1
-						parent, features indx. 43, threshold 0.11
-							leaf, label 1
-							leaf, label 1
+					leaf, label 2
+				leaf, label 2
+			leaf, label 2
+		parent, features indx. 3, threshold 1.99
+			leaf, label 1
+			leaf, label 2
 decision tree 47
-parent, features indx. 11, threshold 0.23
-	parent, features indx. 1, threshold 0.04
-		parent, features indx. 45, threshold 0.16
-			parent, features indx. 10, threshold 0.10
-				leaf, label 0
-				leaf, label 0
-			leaf, label 1
+parent, features indx. 2, threshold 3.57
+	parent, features indx. 2, threshold 2.86
+		leaf, label 0
 		leaf, label 1
-	parent, features indx. 47, threshold 0.08
-		parent, features indx. 59, threshold 0.01
-			parent, features indx. 7, threshold 0.12
-				leaf, label 1
-				leaf, label 0
+	parent, features indx. 3, threshold 1.88
+		parent, features indx. 1, threshold 2.43
 			leaf, label 1
-		parent, features indx. 13, threshold 0.39
-			parent, features indx. 52, threshold 0.00
+			parent, features indx. 0, threshold 6.03
 				leaf, label 1
-				parent, features indx. 16, threshold 0.14
-					leaf, label 1
-					parent, features indx. 35, threshold 0.04
-						leaf, label 1
-						parent, features indx. 25, threshold 0.53
-							leaf, label 1
-							parent, features indx. 0, threshold 0.01
-								leaf, label 1
-								parent, features indx. 42, threshold 0.16
-									leaf, label 1
-									leaf, label 1
-			leaf, label 1
+				leaf, label 2
+		leaf, label 2
 decision tree 48
-parent, features indx. 46, threshold 0.08
-	parent, features indx. 20, threshold 0.84
+parent, features indx. 3, threshold 0.28
+	leaf, label 0
+	parent, features indx. 0, threshold 4.52
 		leaf, label 0
-		leaf, label 1
-	parent, features indx. 44, threshold 0.28
-		parent, features indx. 36, threshold 0.20
-			parent, features indx. 17, threshold 0.23
+		parent, features indx. 3, threshold 1.84
+			parent, features indx. 2, threshold 1.97
 				leaf, label 0
-				parent, features indx. 19, threshold 0.86
-					leaf, label 1
-					leaf, label 1
-			parent, features indx. 52, threshold 0.01
-				leaf, label 0
-				leaf, label 0
-		parent, features indx. 13, threshold 0.13
-			leaf, label 0
-			parent, features indx. 11, threshold 0.17
-				leaf, label 1
-				parent, features indx. 32, threshold 0.36
-					leaf, label 1
-					parent, features indx. 49, threshold 0.01
+				parent, features indx. 3, threshold 1.45
+					parent, features indx. 2, threshold 3.87
 						leaf, label 1
-						leaf, label 1
+						parent, features indx. 1, threshold 2.33
+							leaf, label 1
+							parent, features indx. 0, threshold 6.23
+								leaf, label 1
+								leaf, label 1
+					leaf, label 2
+			leaf, label 2
 decision tree 49
-parent, features indx. 3, threshold 0.05
-	parent, features indx. 6, threshold 0.09
-		parent, features indx. 35, threshold 0.95
-			parent, features indx. 13, threshold 0.06
-				leaf, label 0
-				parent, features indx. 52, threshold 0.00
-					leaf, label 0
-					leaf, label 0
-			leaf, label 0
-		parent, features indx. 45, threshold 0.07
-			leaf, label 0
-			parent, features indx. 33, threshold 0.39
-				parent, features indx. 38, threshold 0.14
-					leaf, label 0
-					parent, features indx. 15, threshold 0.17
-						leaf, label 1
-						leaf, label 1
-				leaf, label 0
-	parent, features indx. 44, threshold 0.11
-		leaf, label 1
-		parent, features indx. 5, threshold 0.17
-			parent, features indx. 23, threshold 0.93
-				parent, features indx. 36, threshold 0.09
-					leaf, label 1
-					parent, features indx. 0, threshold 0.01
-						leaf, label 1
-						parent, features indx. 50, threshold 0.00
-							leaf, label 1
-							leaf, label 1
-				leaf, label 0
-			leaf, label 0
-decision tree 50
-parent, features indx. 10, threshold 0.18
-	parent, features indx. 17, threshold 0.63
-		parent, features indx. 25, threshold 0.74
-			leaf, label 0
-			leaf, label 0
+parent, features indx. 1, threshold 2.09
+	leaf, label 1
+	parent, features indx. 2, threshold 2.60
 		leaf, label 0
-	parent, features indx. 47, threshold 0.05
+		parent, features indx. 1, threshold 3.46
+			parent, features indx. 2, threshold 6.38
+				parent, features indx. 1, threshold 3.38
+					parent, features indx. 2, threshold 5.45
+						parent, features indx. 0, threshold 5.14
+							leaf, label 1
+							parent, features indx. 3, threshold 1.87
+								parent, features indx. 1, threshold 3.25
+									leaf, label 1
+									leaf, label 1
+								leaf, label 2
+						leaf, label 2
+					leaf, label 1
+				leaf, label 2
+			leaf, label 2
+decision tree 50
+parent, features indx. 3, threshold 0.23
+	leaf, label 0
+	parent, features indx. 0, threshold 5.37
 		leaf, label 1
-		parent, features indx. 50, threshold 0.01
-			leaf, label 1
-			parent, features indx. 31, threshold 0.37
+		parent, features indx. 0, threshold 6.79
+			parent, features indx. 1, threshold 2.40
 				leaf, label 1
-				leaf, label 1
+				parent, features indx. 3, threshold 0.68
+					leaf, label 0
+					parent, features indx. 0, threshold 6.20
+						parent, features indx. 3, threshold 1.99
+							parent, features indx. 0, threshold 6.00
+								leaf, label 1
+								leaf, label 1
+							leaf, label 2
+						leaf, label 2
+			leaf, label 2

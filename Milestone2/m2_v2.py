@@ -8,7 +8,6 @@ import time
 import multiprocessing
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-import os
 
 
 logging.basicConfig(
@@ -20,7 +19,7 @@ logging.basicConfig(
     , # also non Ascii characters
     format='%(asctime)s %(levelname)s - %(message)s '
     , # print date and time also
-    level=logging.DEBUG # default level
+    level=logging.INFO # default level
 )
 logging.info('----- Script started -----\n')
 
@@ -77,7 +76,6 @@ class RandomForest(ABC):
         self.num_random_features = num_random_features
         self.impurity = impurity
         self.trees = []
-        self.training_time = 0 
         self.extra_trees = extra_trees 
 
 
@@ -226,10 +224,6 @@ class RandomForest(ABC):
                 tree.acceptVisitor(tree_printer)
         f.close()
         print(f"File '{filename}' has been successfully exported!!\n")
- 
-
-    def other_method_traversing_trees():
-        pass
 
     @abstractmethod
     def _combinePredictions(self, predictions):
@@ -456,7 +450,6 @@ class Temperatures(Import):
     def test_occurrences(self, rf):
         pass
 
-    
     def test_regression(self, last_years_test=1):
         """Train and evaluate a random forest model for regression using the temperature dataset"""
         X, y = self.import_dataset()
@@ -538,9 +531,8 @@ class PrinterTree(Visitor):
 # ---------------------------------------------------------- MAIN ----------------------------------------
 
 if __name__ == '__main__':
-    print("|------------------------------------------------------------------------------|")
 
-    type = input("\nCLASSIFIER or REGRESSION: ").lower()
+    type = input("\n\nCLASSIFIER or REGRESSION: ").lower()
     while type not in ['classifier', 'regression']:
         type = input("Invalid. Choose (CLASSIFIER/REGRESSION): ").lower()
     if type=='regression':
@@ -617,13 +609,4 @@ if __name__ == '__main__':
         rf.print_trees()
         dataset.test_occurrences(rf)
 
-        
-        print("\n|------------------------------------------------------------------------------|")
         logging.info('----- Script ended -----')
-
-            
-
-
-            
-
-

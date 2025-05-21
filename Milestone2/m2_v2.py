@@ -241,8 +241,7 @@ class RandomForestClassifier(RandomForest):
 
     def _make_leaf(self, dataset): 
         """Creates a leaf of the tree, returning the most frequent class in that data group (label)"""  
-        logging.info('Leaf created') 
-        logging.info('Most frequent label: %s', dataset.most_frequent_label())
+        logging.info('Classifier Leaf created with label: %s', dataset.most_frequent_label())
         return Leaf(dataset.most_frequent_label())
     
 class RandomForestRegression(RandomForest):
@@ -253,8 +252,7 @@ class RandomForestRegression(RandomForest):
 
     def _make_leaf(self, dataset): 
         """Creates a leaf of the tree, returning the mean value of the labels (the target values, y) in that data set"""  
-        logging.info('Leaf created') 
-        logging.info('Most frequent label: %s', dataset.mean_value())
+        logging.info('Regression Leaf created with mean value: %.4f', dataset.mean_value())
         return Leaf(dataset.mean_value())    
 
 
@@ -287,9 +285,10 @@ class Leaf(Node):
 
 class Parent(Node):
     """Represents a node in the tree that makes decisions based on a feature and a threshold"""
-    def __init__(self, feature_index, threshold):
+    def __init__(self, feature_index, threshold, left_child, right_child):
+        super().__init__(left_child, right_child)
         self.feature_index = feature_index
-        self.threshold = threshold # umbral
+        self.threshold = threshold 
 
     def predict(self, X):
         """Check the value of X at position feature_index and make a prediction"""
@@ -337,6 +336,8 @@ class SumSquareError(ImpurityMeasure):
         y = dataset.y
         mean_y = dataset.mean_value()  # Usar método seguro de DataSet
         sse = np.sum((y - mean_y) ** 2)
+        logging.debug('SSE.compute: n_samples=%d, mean=%.4f, sse=%.4f',
+                      dataset.get_num_samples, mean_y, sse) 
         return sse
     
 class Import(ABC):
@@ -495,6 +496,7 @@ class FeatureImportance(Visitor):
     def __init__(self):
         """A dictionary is initialized to count the number of times each feature is used"""
         self.occurrences = {}
+        logging.debug('FeatureImportance visitor initialized')
 
     def visitParent(self, node):
         """Method called when visiting a Parent node that records the feature used in that node
@@ -502,6 +504,7 @@ class FeatureImportance(Visitor):
         Then it recursively traverses the left and right children."""
         k = node.feature_index 
         self.occurrences[k] = self.occurrences.get(k, 0) + 1
+        logging.debug('visitParent: feature %d', k)
         node.left_child.acceptVisitor(self)
         node.right_child.acceptVisitor(self)
     
@@ -603,7 +606,7 @@ if __name__ == '__main__':
         time_end = time.time()  # <-- Stop TOTAL timer
         total_time = time_end-time_start
         
-        print(f'Total Time: {int(total_time // 60)}min {(total_time % 60):.4f}s\n\n')  # Format MM min SS sec
+        print(f'Total Time: {int(total_time // 60)}min {(total_time % 60):.4f}s\n\n')  # Formato MM min SS sec
         logging.info('Total Time: %d min %.4fs\n', int(total_time // 60), (total_time % 60))
 
         rf.print_trees()
